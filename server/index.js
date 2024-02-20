@@ -5,7 +5,7 @@ const client = new Client({
     port:5432,
     user:"lulapricingtest",
     password:"INSERT PASS HERE",
-    database:"lula-dynamicpricing-testdb"
+    database:"-"
 })
 
 client.connect();
