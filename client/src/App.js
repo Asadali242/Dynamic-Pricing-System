@@ -1,23 +1,33 @@
 import logo from './logo.svg';
 import './App.css';
+import React, { useState } from 'react';
+import InventoryButton from './InventoryButton';
+import DynamicPricingButton from './DynamicPricingButton';
+import InventoryMenu from './InventoryMenu';
+import DynamicPricingMenu from './DynamicPricingMenu';
 
 function App() {
+  // State to track which menu should be displayed
+  const [activeMenu, setActiveMenu] = useState(null);
+
+  const openInventoryMenu = () => setActiveMenu('inventory');
+  const openDynamicPricingMenu = () => setActiveMenu('dynamicPricing');
+
+  const closeMenu = () => setActiveMenu(null);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <div className="sidebar">
+        <h1>Lula Dynamic Pricing Development Testing</h1>
+        <div className="button-container">
+          <InventoryButton onClick={openInventoryMenu} />
+          <DynamicPricingButton onClick={openDynamicPricingMenu} />
+        </div>
+      </div>
+      <div className="content">
+        {activeMenu === 'inventory' && <InventoryMenu onClose={closeMenu} />}
+        {activeMenu === 'dynamicPricing' && <DynamicPricingMenu onClose={closeMenu} />}
+      </div>
     </div>
   );
 }
