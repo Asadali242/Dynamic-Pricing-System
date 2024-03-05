@@ -3,6 +3,13 @@ import React, { useState } from 'react';
 function InventoryMenu() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [showCreateRuleModal, setShowCreateRuleModal] = useState(false);
+  const [ruleType, setRuleType] = useState(null);
+  const [priceMaximum, setPriceMaximum] = useState('');
+  const [priceMinimum, setPriceMinimum] = useState('');
+  const [duration, setDuration] = useState('');
+
+  
 
   const categories = [
     'Grocery',
@@ -33,6 +40,28 @@ function InventoryMenu() {
       </button>
     ));
   };
+
+  const handleCreateRuleClick = () => {
+    setShowCreateRuleModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowCreateRuleModal(false);
+    setRuleType(null); 
+    setPriceMaximum('');
+    setPriceMinimum('');
+    setDuration('');
+  };
+
+  const handleRuleTypeChange = (event) => {
+    setRuleType(event.target.value);
+  };
+
+  const handleSaveEdit = () => {
+    // Logic for saving edits
+    handleCloseModal(); // Close modal after saving
+  };
+
 
   return (
     <div className="inventory-menu">
@@ -66,8 +95,68 @@ function InventoryMenu() {
           </div>
         )}
         {selectedCategory && <button className="clear-button" onClick={clearCategory}>Clear</button>}
-        {selectedCategory && <button className="create-dynamic-pricing-rule-button">Create Dynamic Pricing Rule</button>}
+        {selectedCategory && (
+          <button className="create-dynamic-pricing-rule-button" onClick={handleCreateRuleClick}>
+            Create Dynamic Pricing Rule
+          </button>
+        )}
       </div>
+      {showCreateRuleModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Create a rule for {selectedCategory}</h3>
+            <label htmlFor="ruleType">Rule Type:</label>
+            <select id="ruleType" value={ruleType} onChange={handleRuleTypeChange}>
+              <option value="">Select Rule Type</option>
+              <option value="TimeOfDay">Time of Day Rule</option>
+              <option value="Seasonality">Seasonality Rule</option>
+            </select>
+            {ruleType === 'TimeOfDay' && (
+              <div>
+                <div>
+                  <label htmlFor="priceMaximum">Price Maximum ($):</label>
+                  <input
+                    type="text"
+                    id="priceMaximum"
+                    value={priceMaximum}
+                    onChange={(e) => setPriceMaximum(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="priceMinimum">Price Minimum ($):</label>
+                  <input
+                    type="text"
+                    id="priceMinimum"
+                    value={priceMinimum}
+                    onChange={(e) => setPriceMinimum(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="duration">Duration (weeks):</label>
+                  <input
+                    type="text"
+                    id="duration"
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
+            {ruleType === 'Seasonality' && (
+              <div>
+                {/* Content for Seasonality rule */}
+                <p>Select season...</p>
+              </div>
+            )}
+            {ruleType && (
+              <div>
+                <button onClick={handleSaveEdit}>Save Edit</button>
+                <button onClick={handleCloseModal}>Cancel</button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       <div className="pricing-recommendations">
         {/* Placeholder for pricing recommendations */}
         <h3>Pricing Recommendations</h3>
