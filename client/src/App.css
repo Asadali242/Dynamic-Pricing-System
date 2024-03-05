@@ -5,18 +5,18 @@
 .sidebar {
   width: 250px;
   height: 100vh;
-  background-color: #f0f0f09c;
+  background-color: #eb0a9cb3;
   padding: 20px;
 }
 
 .button-container {
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
+  margin-top: 90px;
 }
 
 .button-container button {
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
 .content {
