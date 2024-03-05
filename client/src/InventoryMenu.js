@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function InventoryMenu() {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -8,9 +8,15 @@ function InventoryMenu() {
   const [priceMaximum, setPriceMaximum] = useState('');
   const [priceMinimum, setPriceMinimum] = useState('');
   const [duration, setDuration] = useState('');
-
+  const [hourRules, setHourRules] = useState([]);
+  const [isValidTimeFormat, setIsValidTimeFormat] = useState(true);
+  const [seasonRules, setSeasonRules] = useState([]);
+  const [validPriceMaximum, setValidPriceMaximum] = useState(false);
+  const [validPriceMinimum, setValidPriceMinimum] = useState(false);
+  const [validDuration, setValidDuration] = useState(false);
+  const [validHourRules, setValidHourRules] = useState(false);
+  const [validSeasonRules, setValidSeasonRules] = useState(false);
   
-
   const categories = [
     'Grocery',
     'Hot Foods',
@@ -24,6 +30,20 @@ function InventoryMenu() {
     'Household'
   ];
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showCreateRuleModal && !event.target.closest('.inventory-menu')) {
+        handleCloseModal();
+      }
+    };
+
+    document.body.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.body.removeEventListener('click', handleClickOutside);
+    };
+  }, [showCreateRuleModal]);
+  
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
     setShowPopup(false);
@@ -51,17 +71,127 @@ function InventoryMenu() {
     setPriceMaximum('');
     setPriceMinimum('');
     setDuration('');
+    setHourRules([]);
+    setIsValidTimeFormat(true);
+    setSeasonRules([]);
   };
 
+  
   const handleRuleTypeChange = (event) => {
     setRuleType(event.target.value);
+
+    if (event.target.value === 'Seasonality') {
+      setSeasonRules([
+        { season: 'Summer', type: '+', percent: '' },
+        { season: 'Fall', type: '+', percent: '' },
+        { season: 'Winter', type: '+', percent: '' },
+        { season: 'Spring', type: '+', percent: '' }
+      ]);
+    }
   };
+
+  
 
   const handleSaveEdit = () => {
-    // Logic for saving edits
-    handleCloseModal(); // Close modal after saving
+    let isValid = true;
+
+    // Check if price maximum is a valid positive number
+    if (isNaN(parseFloat(priceMaximum)) || parseFloat(priceMaximum) < 0) {
+        setValidPriceMaximum(false);
+        isValid = false;
+    } else {
+        setValidPriceMaximum(true);
+    }
+
+    // Check if price minimum is a valid positive number
+    if (isNaN(parseFloat(priceMinimum)) || parseFloat(priceMinimum) < 0) {
+        setValidPriceMinimum(false);
+        isValid = false;
+    } else {
+        setValidPriceMinimum(true);
+    }
+
+    // Check if duration is a valid positive number
+    if (isNaN(parseFloat(duration)) || parseFloat(duration) < 0) {
+        setValidDuration(false);
+        isValid = false;
+    } else {
+        setValidDuration(true);
+    }
+
+    // Check if all hour rules have valid percentages
+    const validHourRules = hourRules.every(rule => !isNaN(parseFloat(rule.percent)) && parseFloat(rule.percent) >= 0);
+    if (!validHourRules) {
+        setValidHourRules(false);
+        isValid = false;
+    } else {
+        setValidHourRules(true);
+    }
+
+    // Check if all season rules have valid percentages
+    const validSeasonRules = seasonRules.every(rule => !isNaN(parseFloat(rule.percent)) && parseFloat(rule.percent) >= 0);
+    if (!validSeasonRules) {
+        setValidSeasonRules(false);
+        isValid = false;
+    } else {
+        setValidSeasonRules(true);
+    }
+
+    // Check if there are no repeated hours of the day
+    const selectedHours = hourRules.map(rule => rule.timestamp.split(':')[0]);
+    const hasRepeatedHours = selectedHours.some((hour, index) => selectedHours.indexOf(hour) !== index);
+    if (hasRepeatedHours) {
+        setValidHourRules(false);
+        isValid = false;
+    }
+
+    if (isValid) {
+        // Logic for saving edits
+        handleCloseModal(); // Close modal after saving
+    }
+};
+
+
+
+  const handleAddHourRule = () => {
+    if (hourRules.length < 24) {
+      setHourRules([...hourRules, { timestamp: '', type: '+', percent: '' }]);
+    }
   };
 
+  const handleHourRuleChange = (index, key, value) => {
+    const updatedHourRules = [...hourRules];
+    if (key === 'hour') {
+      updatedHourRules[index].timestamp = `${value}:00`;
+    } else {
+      updatedHourRules[index][key] = value;
+    }
+    setHourRules(updatedHourRules);
+  };
+
+  const handleRemoveHourRule = (index) => {
+    const updatedHourRules = [...hourRules];
+    updatedHourRules.splice(index, 1);
+    setHourRules(updatedHourRules);
+  };
+
+  const handleAddSeasonRule = () => {
+    if (seasonRules.length < 4) {
+      setSeasonRules([...seasonRules, { season: '', type: '+', percent: '' }]);
+    }
+  };
+  
+  const handleRemoveSeasonRule = (index) => {
+    const updatedSeasonRules = [...seasonRules];
+    updatedSeasonRules.splice(index, 1);
+    setSeasonRules(updatedSeasonRules);
+  };
+  
+  const handleSeasonRuleChange = (index, key, value) => {
+    const updatedSeasonRules = [...seasonRules];
+    updatedSeasonRules[index][key] = value;
+    setSeasonRules(updatedSeasonRules);
+  };
 
   return (
     <div className="inventory-menu">
@@ -112,6 +242,106 @@ function InventoryMenu() {
               <option value="Seasonality">Seasonality Rule</option>
             </select>
             {ruleType === 'TimeOfDay' && (
+                <div>
+                    <div>
+                        <label htmlFor="priceMaximum">Price Maximum ($):</label>
+                        <input
+                            type="text"
+                            id="priceMaximum"
+                            value={priceMaximum}
+                            onChange={(e) => setPriceMaximum(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="priceMinimum">Price Minimum ($):</label>
+                        <input
+                            type="text"
+                            id="priceMinimum"
+                            value={priceMinimum}
+                            onChange={(e) => setPriceMinimum(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="duration">Duration (weeks):</label>
+                        <input
+                            type="text"
+                            id="duration"
+                            value={duration}
+                            onChange={(e) => setDuration(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <h4>Hour Rules</h4>
+                        {hourRules.map((rule, index) => (
+                            <div key={index}>
+                                <label htmlFor={`hour${index}`}>Hour of the Day:</label>
+                                <select
+                                    id={`hour${index}`}
+                                    value={rule.hour}
+                                    onChange={(e) => handleHourRuleChange(index, 'hour', e.target.value)}
+                                >
+                                    <option value="1">01:00</option>
+                                    <option value="2">02:00</option>
+                                    <option value="3">03:00</option>
+                                    <option value="4">04:00</option>
+                                    <option value="5">05:00</option>
+                                    <option value="6">06:00</option>
+                                    <option value="7">07:00</option>
+                                    <option value="8">08:00</option>
+                                    <option value="9">09:00</option>
+                                    <option value="10">10:00</option>
+                                    <option value="11">11:00</option>
+                                    <option value="12">12:00</option>
+                                    <option value="13">13:00</option>
+                                    <option value="14">14:00</option>
+                                    <option value="15">15:00</option>
+                                    <option value="16">16:00</option>
+                                    <option value="17">17:00</option>
+                                    <option value="18">18:00</option>
+                                    <option value="19">19:00</option>
+                                    <option value="20">20:00</option>
+                                    <option value="21">21:00</option>
+                                    <option value="22">22:00</option>
+                                    <option value="23">23:00</option>
+                                    <option value="24">24:00</option>
+                                    {/* Add other options for each hour of the day */}
+                                </select>
+                                <label htmlFor={`timezone${index}`}>Time Zone:</label>
+                                <select
+                                    id={`timezone${index}`}
+                                    value={rule.timezone}
+                                    onChange={(e) => handleHourRuleChange(index, 'timezone', e.target.value)}
+                                >
+                                    <option value="PST">PST</option>
+                                    <option value="EST">EST</option>
+                                    {/* Add other time zone options */}
+                                </select>
+                                <label htmlFor={`type${index}`}>Type:</label>
+                                <select
+                                    id={`type${index}`}
+                                    value={rule.type}
+                                    onChange={(e) => handleHourRuleChange(index, 'type', e.target.value)}
+                                >
+                                    <option value="+">+</option>
+                                    <option value="-">-</option>
+                                </select>
+                                <label htmlFor={`percent${index}`}>Percent (%):</label>
+                                <input
+                                    type="text"
+                                    id={`percent${index}`}
+                                    value={rule.percent}
+                                    onChange={(e) => handleHourRuleChange(index, 'percent', e.target.value)}
+                                />
+                                <button onClick={(e) => { e.stopPropagation(); handleRemoveHourRule(index); }}>Remove Rule</button>
+                            </div>
+                        ))}
+                        {hourRules.length < 24 && (
+                            <button onClick={handleAddHourRule}>Add Hour Rule</button>
+                        )}
+                    </div>
+                </div>
+            )}
+            {ruleType === 'Seasonality' && (
               <div>
                 <div>
                   <label htmlFor="priceMaximum">Price Maximum ($):</label>
@@ -132,7 +362,7 @@ function InventoryMenu() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="duration">Duration (weeks):</label>
+                  <label htmlFor="duration">Duration (years):</label>
                   <input
                     type="text"
                     id="duration"
@@ -140,12 +370,30 @@ function InventoryMenu() {
                     onChange={(e) => setDuration(e.target.value)}
                   />
                 </div>
-              </div>
-            )}
-            {ruleType === 'Seasonality' && (
-              <div>
-                {/* Content for Seasonality rule */}
-                <p>Select season...</p>
+                <div>
+                  <h4>Season Rules</h4>
+                  {seasonRules.map((rule, index) => (
+                    <div key={index}>
+                      <p>{rule.season}</p> {/* Static text for season */}
+                      <label htmlFor={`type${index}`}>Type:</label>
+                      <select
+                        id={`type${index}`}
+                        value={rule.type}
+                        onChange={(e) => handleSeasonRuleChange(index, 'type', e.target.value)}
+                      >
+                        <option value="+">+</option>
+                        <option value="-">-</option>
+                      </select>
+                      <label htmlFor={`percent${index}`}>Percent (%):</label>
+                      <input
+                        type="text"
+                        id={`percent${index}`}
+                        value={rule.percent}
+                        onChange={(e) => handleSeasonRuleChange(index, 'percent', e.target.value)}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             {ruleType && (

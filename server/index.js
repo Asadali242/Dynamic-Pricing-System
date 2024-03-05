@@ -10,7 +10,7 @@ const client = new Client({
 
 client.connect();
 
-client.query('select * From demo_table', (err, result) => {
+client.query('select * From StoreItems', (err, result) => {
     if(!err){
         console.log(result.rows);
     }
