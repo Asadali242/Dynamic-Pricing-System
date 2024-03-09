@@ -16,6 +16,7 @@ function InventoryMenu() {
   const [validDuration, setValidDuration] = useState(false);
   const [validHourRules, setValidHourRules] = useState(false);
   const [validSeasonRules, setValidSeasonRules] = useState(false);
+  const [timezone, setTimezone] = useState('EST');
   
   const categories = [
     'Grocery',
@@ -71,6 +72,7 @@ function InventoryMenu() {
     setPriceMaximum('');
     setPriceMinimum('');
     setDuration('');
+    setTimezone('EST');
     setHourRules([]);
     setIsValidTimeFormat(true);
     setSeasonRules([]);
@@ -95,6 +97,10 @@ function InventoryMenu() {
   const handleSaveEdit = () => {
     let isValid = true;
 
+    const hasPlaceholderHour = hourRules.some(rule => rule.timestamp === "" /*|| ":00"*/);
+    if (hasPlaceholderHour) {
+      isValid = false;
+    }
     // Check if price maximum is a valid positive number
     if (isNaN(parseFloat(priceMaximum)) || parseFloat(priceMaximum) < 0) {
         setValidPriceMaximum(false);
@@ -144,10 +150,42 @@ function InventoryMenu() {
         setValidHourRules(false);
         isValid = false;
     }
-
     if (isValid) {
-        // Logic for saving edits
-        handleCloseModal(); // Close modal after saving
+      console.log(JSON.stringify({
+        ruleType,
+        category: selectedCategory,
+        duration,
+        priceMinimum,
+        priceMaximum,
+        timezone,
+        hourlyPriceChanges: hourRules,
+        seasonalPriceChanges: seasonRules
+    }),)
+      fetch('http://localhost:5000/save_rule', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            ruleType,
+            category: selectedCategory,
+            duration,
+            priceMinimum,
+            priceMaximum,
+            timezone,
+            hourlyPriceChanges: hourRules,
+            seasonalPriceChanges: seasonRules
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('Success:', data);
+          handleCloseModal(); // Close modal after saving
+      })
+      .catch((error) => {
+          console.error('Error:', error);
+      });
+      handleCloseModal(); 
     }
 };
 
@@ -271,6 +309,17 @@ function InventoryMenu() {
                         />
                     </div>
                     <div>
+                      <label htmlFor="timezone">Time Zone:</label>
+                      <select
+                        id="timezone"
+                        value={timezone}
+                        onChange={(e) => setTimezone(e.target.value)}
+                      >
+                        <option value="EST">EST</option>
+                        <option value="PST">PST</option>
+                      </select>
+                    </div>
+                    <div>
                         <h4>Hour Rules</h4>
                         {hourRules.map((rule, index) => (
                             <div key={index}>
@@ -280,6 +329,7 @@ function InventoryMenu() {
                                     value={rule.hour}
                                     onChange={(e) => handleHourRuleChange(index, 'hour', e.target.value)}
                                 >
+                                    <option value="">Select Hour</option>
                                     <option value="1">01:00</option>
                                     <option value="2">02:00</option>
                                     <option value="3">03:00</option>
@@ -304,17 +354,6 @@ function InventoryMenu() {
                                     <option value="22">22:00</option>
                                     <option value="23">23:00</option>
                                     <option value="24">24:00</option>
-                                    {/* Add other options for each hour of the day */}
-                                </select>
-                                <label htmlFor={`timezone${index}`}>Time Zone:</label>
-                                <select
-                                    id={`timezone${index}`}
-                                    value={rule.timezone}
-                                    onChange={(e) => handleHourRuleChange(index, 'timezone', e.target.value)}
-                                >
-                                    <option value="PST">PST</option>
-                                    <option value="EST">EST</option>
-                                    {/* Add other time zone options */}
                                 </select>
                                 <label htmlFor={`type${index}`}>Type:</label>
                                 <select
