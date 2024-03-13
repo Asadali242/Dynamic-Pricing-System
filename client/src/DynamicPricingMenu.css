@@ -1,0 +1,89 @@
+.dashboard {
+    text-align: center;
+    background-color: #f0f0f0;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .view-enrolled-products-button-container {
+    display: flex;
+    justify-content: center;
+  }
+  
+  
+  .view-enrolled-products-button {
+    background-color: hotpink;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  .popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    position: relative; /* Add this to position filter buttons relative to popup content */
+  }
+  
+  .exit-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: white; /* Set background color to white */
+    border: 2px solid hotpink; /* Add border instead of background color */
+    color: hotpink; /* Set text color to hotpink */
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  .filter-buttons {
+    display: flex;
+    flex-wrap: wrap; /* Add this to wrap buttons when screen size is small */
+    justify-content: space-between;
+    margin-bottom: 20px; /* Add margin bottom to separate from enrolled products list */
+  }
+  
+  .calendar-button,
+  .search-bar,
+  .filter-button {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px; /* Add margin bottom to separate buttons */
+  }
+  
+  .search-bar {
+    flex-grow: 1; /* Make search bar expand to fill available space */
+  }
+  
+  /* Media query for responsive design */
+  @media (max-width: 768px) {
+    .filter-buttons {
+      flex-direction: column; /* Change to column layout for smaller screens */
+      align-items: stretch; /* Stretch buttons to fill width */
+    }
+  
+    .calendar-button,
+    .search-bar,
+    .filter-button {
+      width: 100%; /* Make buttons full width on smaller screens */
+    }
+  }
+  
