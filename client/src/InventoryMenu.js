@@ -17,9 +17,11 @@ function InventoryMenu() {
   const [validHourRules, setValidHourRules] = useState(false);
   const [validSeasonRules, setValidSeasonRules] = useState(false);
   const [timezone, setTimezone] = useState('EST');
+
+  const [itemsInCategory, setItemsInCategory] = useState([]);
   
   const categories = [
-    'Grocery',
+    /*'Grocery',
     'Hot Foods',
     'Ice Cream',
     'Medicine',
@@ -28,8 +30,30 @@ function InventoryMenu() {
     'Water',
     'Snacks',
     'Health',
-    'Household'
+    'Household'*/
+    'Snacks',
+    'Ice Cream',
+    'Chicken',
+    'Candy',
+    'Beverages'
   ];
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/items_by_alphabet?limit=25');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setItemsInCategory(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchItems();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -48,10 +72,43 @@ function InventoryMenu() {
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
     setShowPopup(false);
+    // Fetch items for the selected category
+    const url = `http://localhost:5000/items_by_category?category=${category}`;
+
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Update state with received data
+        setItemsInCategory(data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+    
   };
 
   const clearCategory = () => {
     setSelectedCategory(null);
+    // Fetch alphabetical items
+    const fetchAlphabeticalItems = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/items_by_alphabet?limit=25');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setItemsInCategory(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchAlphabeticalItems();
   };
 
   const renderCategoryButtons = () => {
@@ -76,9 +133,27 @@ function InventoryMenu() {
     setHourRules([]);
     setIsValidTimeFormat(true);
     setSeasonRules([]);
+    if (selectedCategory) {
+      // Fetch items for the previously selected category
+      const url = `http://localhost:5000/items_by_category?category=${selectedCategory}`;
+  
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Update state with received data
+          setItemsInCategory(data);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    }
   };
 
-  
   const handleRuleTypeChange = (event) => {
     setRuleType(event.target.value);
 
@@ -91,8 +166,6 @@ function InventoryMenu() {
       ]);
     }
   };
-
-  
 
   const handleSaveEdit = () => {
     let isValid = true;
@@ -189,8 +262,6 @@ function InventoryMenu() {
     }
 };
 
-
-
   const handleAddHourRule = () => {
     if (hourRules.length < 24) {
       setHourRules([...hourRules, { timestamp: '', type: '+', percent: '' }]);
@@ -236,18 +307,9 @@ function InventoryMenu() {
       <h2>Inventory</h2>
       {selectedCategory && <p>Filtering by: {selectedCategory}</p>}
       <div className="item-list">
-        <ul>
-          <li>{selectedCategory ? `Item info from '${selectedCategory}'` : 'Item 1'}</li>
-          <li>{selectedCategory ? `Item info from '${selectedCategory}'` : 'Item 2'}</li>
-          <li>{selectedCategory ? `Item info from '${selectedCategory}'` : 'Item 3'}</li>
-          <li>{selectedCategory ? `Item info from '${selectedCategory}'` : 'Item 4'}</li>
-          <li>{selectedCategory ? `Item info from '${selectedCategory}'` : 'Item 5'}</li>
-          <li>{selectedCategory ? `Item info from '${selectedCategory}'` : 'Item 6'}</li>
-          <li>{selectedCategory ? `Item info from '${selectedCategory}'` : 'Item 7'}</li>
-          <li>{selectedCategory ? `Item info from '${selectedCategory}'` : 'Item 8'}</li>
-          <li>{selectedCategory ? `Item info from '${selectedCategory}'` : 'Item 9'}</li>
-          <li>{selectedCategory ? `Item info from '${selectedCategory}'` : 'Item 10'}</li>
-        </ul>
+        {itemsInCategory.map((item, index) => (
+          <li key={index}>{item[1]} - ${`${item[2].slice(0, 1)}.${item[2].slice(1)}`}</li>
+        ))}
       </div>
       <div className="filter-container">
         <button className="filter-button" onClick={() => setShowPopup(true)}>Filter</button>
