@@ -234,7 +234,7 @@ function InventoryMenu() {
         hourlyPriceChanges: hourRules,
         seasonalPriceChanges: seasonRules
     }),)
-      fetch('http://localhost:5000/save_rule', {
+      fetch('http://localhost:5000/create_rule', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

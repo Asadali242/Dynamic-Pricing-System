@@ -1,6 +1,7 @@
 import psycopg2
+import json
 
-# Define the connection parameters
+#connection parameter definitions
 DB_HOST = "lula-dynamicpricing-testdb.ca3vbbjlumqp.us-east-1.rds.amazonaws.com"
 DB_PORT = 5432
 DB_USER = "lulapricingtest"
@@ -33,7 +34,6 @@ def getItemsByCategory(category):
         print("Error fetching items:", e)
         return []
     
-
 def getItems(limit=20):
     try:
         conn = psycopg2.connect(
@@ -59,12 +59,31 @@ def getItems(limit=20):
         print("Error fetching items:", e)
         return []
 
-# Example usage:
-items = getItemsByCategory('Chicken')
-for item in items:
-    print(item)
-
-
-items = getItems()
-for item in items:
-    print(item)
+def updateManualTimeRuleForCategory(category, rule_data):
+    try:
+        # retrieve all items in the specified category
+        items = getItemsByCategory(category)
+        # update manual_time_rule for each item
+        for item in items:
+            item_id = item[0]
+            conn = psycopg2.connect(
+                host=DB_HOST,
+                port=DB_PORT,
+                user=DB_USER,
+                password=DB_PASSWORD,
+                database=DB_NAME
+            )
+            cur = conn.cursor()
+            update_query = """
+                UPDATE storeitems
+                SET manual_time_rule = %s
+                WHERE id = %s
+            """
+            cur.execute(update_query, (rule_data, item_id))
+            conn.commit()
+            cur.close()
+            conn.close()
+        return True
+    except psycopg2.Error as e:
+        print("Error updating manual_time_rule:", e)
+        return False
