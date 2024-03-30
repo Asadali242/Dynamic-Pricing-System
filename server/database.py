@@ -87,3 +87,32 @@ def updateManualTimeRuleForCategory(category, rule_data):
     except psycopg2.Error as e:
         print("Error updating manual_time_rule:", e)
         return False
+
+def updateManualSeasonalityRuleForCategory(category, rule_data):
+    try:
+        # retrieve all items in the specified category
+        items = getItemsByCategory(category)
+        # update manual_time_rule for each item
+        for item in items:
+            item_id = item[0]
+            conn = psycopg2.connect(
+                host=DB_HOST,
+                port=DB_PORT,
+                user=DB_USER,
+                password=DB_PASSWORD,
+                database=DB_NAME
+            )
+            cur = conn.cursor()
+            update_query = """
+                UPDATE storeitems
+                SET manual_seasonality_rule = %s
+                WHERE id = %s
+            """
+            cur.execute(update_query, (rule_data, item_id))
+            conn.commit()
+            cur.close()
+            conn.close()
+        return True
+    except psycopg2.Error as e:
+        print("Error updating manual_seasonality_rule:", e)
+        return False

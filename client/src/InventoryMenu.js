@@ -302,6 +302,24 @@ function InventoryMenu() {
     setSeasonRules(updatedSeasonRules);
   };
 
+  const handleRemoveAllRules = () => {
+    fetch('http://localhost:5000/clear_rules', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ category: selectedCategory }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+        // maybe update state or show a success message
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // handle errors, show error message, etc.
+      });
+  };
   return (
     <div className="inventory-menu">
       <h2>Inventory</h2>
@@ -326,9 +344,14 @@ function InventoryMenu() {
         )}
         {selectedCategory && <button className="clear-button" onClick={clearCategory}>Clear</button>}
         {selectedCategory && (
+          <>
           <button className="create-dynamic-pricing-rule-button" onClick={handleCreateRuleClick}>
             Create Dynamic Pricing Rule
           </button>
+          <button className="remove-all-dynamic-pricing-rules-button" onClick={handleRemoveAllRules}>
+            Remove All Dynamic Pricing Rules
+          </button>
+        </>
         )}
       </div>
       {showCreateRuleModal && (

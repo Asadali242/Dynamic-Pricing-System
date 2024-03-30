@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import sys
 import logging
-from database import getItemsByCategory, getItems, updateManualTimeRuleForCategory
+from database import getItemsByCategory, getItems, updateManualTimeRuleForCategory, updateManualSeasonalityRuleForCategory
 import json
 
 app = Flask(__name__)
@@ -52,9 +52,49 @@ def create_rule():
                 "hourlyPriceChanges": hourlyPriceChanges
             }
             updateManualTimeRuleForCategory(category, json.dumps(manual_time_rule_data))
-        return jsonify({'message': 'Time rule created successfully'})
+        if ruleType == "Seasonality":
+            manual_seasonality_rule_data = {
+                "active": True,  
+                "durationInYears": duration,
+                "priceMax": priceMaximum,
+                "priceMin": priceMinimum,
+                "timeZone": timezone,
+                "seasonalPriceChanges": seasonalPriceChanges
+            }
+            updateManualSeasonalityRuleForCategory(category, json.dumps(manual_seasonality_rule_data))
+        return jsonify({'message': 'rule created successfully'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+@app.route('/clear_rules', methods=['POST'])
+def clear_rules():
+    try:
+        #data from client
+        data = request.json 
+        print(data, flush=True)
+        category = data.get('category')
+        default_time_rule_data = {
+                "active": False,  
+                "durationInDays": None,
+                "priceMax": None,
+                "priceMin": None,
+                "timeZone": "",
+                "hourlyPriceChanges": {}
+            }
+        default_seasonality_rule_data = {
+                "active": False,  
+                "durationInYears": None,
+                "priceMax": None,
+                "priceMin": None,
+                "timeZone": "",
+                "seasonalPriceChanges": {}
+            }
+        updateManualTimeRuleForCategory(category, json.dumps(default_time_rule_data))
+        updateManualSeasonalityRuleForCategory(category, json.dumps(default_seasonality_rule_data))
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
