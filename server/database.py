@@ -1,5 +1,9 @@
 import psycopg2
+from psycopg2 import Error
 import json
+import datetime
+from database_helper_functions import getTimeZoneOffset, getCurrentHour, adjustHourForTimeZone
+from server import database_helper_functions
 
 #connection parameter definitions
 DB_HOST = "lula-dynamicpricing-testdb.ca3vbbjlumqp.us-east-1.rds.amazonaws.com"
@@ -116,3 +120,31 @@ def updateManualSeasonalityRuleForCategory(category, rule_data):
     except psycopg2.Error as e:
         print("Error updating manual_seasonality_rule:", e)
         return False
+
+def manualHourlyPriceUpdate():
+    relevant_store_items = fetchActiveManualHourRuleStoreItems()
+    current_hour = getCurrentHour()
+
+    for item_id, manual_time_rule in relevant_store_items:
+        hourly_price_changes = manual_time_rule.get('hourlyPriceChanges', [])
+        time_zone = manual_time_rule.get('timeZone')
+        #current hour for the rule's timezone
+        current_hour_adjusted = adjustHourForTimeZone(current_hour, time_zone)
+
+        for change in hourly_price_changes:
+            rule_hour = int(change['timestamp'].split(':')[0])
+            rule_hour_adjusted = adjustHourForTimeZone(rule_hour, time_zone)
+            
+            if rule_hour_adjusted == current_hour_adjusted:
+                #change item's price based on the change type and percent
+                if change['type'] == '+':
+                    item_price = fetchItemPriceFromDatabase(item_id)
+                    new_price = item_price * (1 + float(change['percent']) / 100)
+                    updateItemPriceInDatabase(item_id, new_price)
+                    #add func to add price change history info to price history table
+                elif change['type'] == '-':
+                    # Assuming item price is fetched from database
+                    item_price = fetchItemPriceFromDatabase(item_id)
+                    new_price = item_price * (1 - float(change['percent']) / 100)
+                    updateItemPriceInDatabase(item_id, new_price)
+                    #add func to add price change history info to price history table

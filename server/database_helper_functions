@@ -1,0 +1,125 @@
+import json
+from datetime import datetime
+import psycopg2
+from psycopg2 import Error
+
+DB_HOST = "lula-dynamicpricing-testdb.ca3vbbjlumqp.us-east-1.rds.amazonaws.com"
+DB_PORT = 5432
+DB_USER = "lulapricingtest"
+DB_PASSWORD = "luladbtest"
+DB_NAME = "postgres"
+
+def getTimeZoneOffset(timezone):
+    current_offset = datetime.datetime.now(datetime.timezone.utc).astimezone(timezone).utcoffset().total_seconds()
+    offset_hours = current_offset / 3600
+    return offset_hours
+
+def getCurrentHour(timezone='UTC'):
+    # get the current time in the specified timezone
+    current_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=getTimeZoneOffset(timezone))))
+    
+    # Extract the current hour
+    current_hour = current_time.hour
+    
+    return current_hour
+
+def adjustHourForTimeZone(hour, time_zone):
+    #current time in the specified time zone
+    current_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=getTimeZoneOffset(time_zone))))   
+    #current hour in the specified time zone
+    current_hour_adjusted = current_time.hour
+    #difference between the current hour and the input hour
+    hour_difference = current_hour_adjusted - current_time.hour
+    #adjusted input hour based on the time zone difference
+    adjusted_hour = (hour + hour_difference) % 24
+    return adjusted_hour
+
+def fetchActiveManualHourRuleStoreItems():
+    try:
+        conn = psycopg2.connect(
+            host=DB_HOST,
+            port=DB_PORT,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DB_NAME
+        )
+        cur = conn.cursor()
+        query = """
+            SELECT id, manual_time_rule
+            FROM storeitems
+            WHERE manual_time_rule->>'active' = 'true'
+        """
+        cur.execute(query)
+        relevant_store_items = cur.fetchall()
+        cur.close()
+        conn.close()
+        return relevant_store_items
+    except Error as e:
+        print("Error fetching active manual hour rule store items:", e)
+        return []   
+
+def fetchItemPriceFromDatabase(item_id):
+    try:
+        # Establish connection to the database
+        conn = psycopg2.connect(
+            host=DB_HOST,
+            port=DB_PORT,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DB_NAME
+        )
+        cur = conn.cursor()
+
+        # Query to fetch item price by item_id
+        query = """
+            SELECT price
+            FROM storeitems
+            WHERE id = %s
+        """
+        cur.execute(query, (item_id,))
+        price_in_cents = cur.fetchone()[0]  # Fetch the first column of the first row (price in cents)
+
+        # Close cursor and connection
+        cur.close()
+        conn.close()
+
+        # If the item is actually 1.49$ its in the database as 149
+        # if the item is actually 10.57$ its in the database as 10.57
+        # is this something we need to change?
+
+        # convert price from cents to dollars with decimal point
+        price_in_dollars = price_in_cents / 100.0
+        
+        return price_in_dollars
+    except psycopg2.Error as e:
+        print("Error fetching item price:", e)
+        return None
+    
+def updateItemPriceInDatabase(item_id, new_price):
+    try:
+        # Establish connection to the database
+        conn = psycopg2.connect(
+            host=DB_HOST,
+            port=DB_PORT,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DB_NAME
+        )
+        cur = conn.cursor()
+
+        # Update item price in the database
+        query = """
+            UPDATE storeitems
+            SET price = %s
+            WHERE id = %s
+        """
+        cur.execute(query, (new_price * 100, item_id))  # Multiply new_price by 100 to convert to cents
+        conn.commit()  # Commit the transaction
+
+        # Close cursor and connection
+        cur.close()
+        conn.close()
+
+        print("Item price updated successfully.")
+    except psycopg2.Error as e:
+        print("Error updating item price:", e)
