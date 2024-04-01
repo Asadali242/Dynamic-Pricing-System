@@ -95,8 +95,17 @@ def clear_rules():
         updateManualSeasonalityRuleForCategory(category, json.dumps(default_seasonality_rule_data))
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
 
+   
+def hourly_update():
+    print("Running manualHourlyPriceUpdate...")
+    manualHourlyPriceUpdate()
+    print("manualHourlyPriceUpdate completed.") 
+
+schedule.every().hour.at(":00").do(hourly_update)
+while True:
+    schedule.run_pending()
+    time.sleep(60) 
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
