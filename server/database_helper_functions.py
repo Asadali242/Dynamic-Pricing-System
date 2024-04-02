@@ -112,3 +112,5 @@ def updateItemPriceInDatabase(item_id, new_price):
         print("Item price updated successfully.")
     except psycopg2.Error as e:
         print("Error updating item price:", e)
+
+        

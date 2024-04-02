@@ -385,7 +385,7 @@ function InventoryMenu() {
                         />
                     </div>
                     <div>
-                        <label htmlFor="duration">Duration (weeks):</label>
+                        <label htmlFor="duration">Duration (days):</label>
                         <input
                             type="text"
                             id="duration"

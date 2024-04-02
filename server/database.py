@@ -4,6 +4,13 @@ import json
 import datetime
 from database_helper_functions import getCurrentHour, fetchActiveManualHourRuleStoreItems, fetchItemPriceFromDatabase, updateItemPriceInDatabase
 from decimal import Decimal
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
+from datetime import datetime, timedelta
+category_timers_time = {}
+category_timers_seasonality = {}
+scheduler = BackgroundScheduler()
+
 
 #connection parameter definitions
 DB_HOST = "lula-dynamicpricing-testdb.ca3vbbjlumqp.us-east-1.rds.amazonaws.com"
@@ -65,6 +72,25 @@ def getItems(limit=20):
 
 def updateManualTimeRuleForCategory(category, rule_data):
     try:
+        # Logic for setting timer based on duration and ending the rule upon time elapsing
+        rule_data_json = json.loads(rule_data)
+        duration_in_days = rule_data_json.get('durationInDays')
+        print("Duration in days:", duration_in_days)
+        
+        if duration_in_days is not None:
+            # If a timer already exists for these items, overwrite it
+            if category in category_timers_time:
+                category_timers_time[category].remove()
+            
+            # Calculate the datetime when the rule should be reverted back to default
+            expiry_datetime = datetime.now() + timedelta(days=duration_in_days)
+            
+            # Schedule a one-time job to revert the rule back to default
+            timer = scheduler.add_job(restoreTimeRuleDefaultsForCategory, 'date', run_date=expiry_datetime, args=[category])
+            category_timers_time[category] = timer
+            print("Timer scheduled for category:", category)
+            print("Timer info:", timer)
+
         # retrieve all items in the specified category
         items = getItemsByCategory(category)
         # update manual_time_rule for each item
@@ -94,6 +120,25 @@ def updateManualTimeRuleForCategory(category, rule_data):
 
 def updateManualSeasonalityRuleForCategory(category, rule_data):
     try:
+        # Logic for setting timer based on duration and ending the rule upon time elapsing
+        rule_data_json = json.loads(rule_data)
+        duration_in_years = rule_data_json.get('durationInYears')
+        print("Duration in years:", duration_in_years)
+        
+        if duration_in_years is not None:
+            # If a timer already exists for these items, overwrite it
+            if category in category_timers_seasonality:
+                category_timers_seasonality[category].remove()
+            
+            # Calculate the datetime when the rule should be reverted back to default
+            expiry_datetime = datetime.now() + timedelta(days=365 * duration_in_years)
+            
+            # Schedule a one-time job to revert the rule back to default
+            timer = scheduler.add_job(restoreSeasonalityRuleDefaultsForCategory, 'date', run_date=expiry_datetime, args=[category])
+            category_timers_seasonality[category] = timer
+            print("Timer scheduled for category:", category)
+            print("Timer info:", timer)
+        
         # retrieve all items in the specified category
         items = getItemsByCategory(category)
         # update manual_time_rule for each item
@@ -157,3 +202,81 @@ def manualHourlyPriceUpdate():
                     updateItemPriceInDatabase(item_id, new_price)
 
                     #add func to add price change history info to price history table
+
+def restoreTimeRuleDefaultsForCategory(category):
+    global category_timers_time
+    default_time_rule_data = {
+        "active": False,
+        "durationInDays": None,
+        "priceMax": None,
+        "priceMin": None,
+        "timeZone": "",
+        "hourlyPriceChanges": {}
+    }
+
+    # Update the manual time rule for the category with defaults 
+    try:
+        default_time_rule_json = json.dumps(default_time_rule_data)
+        items = getItemsByCategory(category)
+        for item in items:
+            item_id = item[0]
+            conn = psycopg2.connect(
+                host=DB_HOST,
+                port=DB_PORT,
+                user=DB_USER,
+                password=DB_PASSWORD,
+                database=DB_NAME
+            )
+            cur = conn.cursor()
+            update_query = """
+                UPDATE storeitems
+                SET manual_time_rule = %s
+                WHERE id = %s
+            """
+            cur.execute(update_query, (default_time_rule_json, item_id))
+            conn.commit()
+            cur.close()
+            conn.close()
+        return True
+    except psycopg2.Error as e:
+        print("Error updating manual_time_rule:", e)
+        return False
+
+def restoreSeasonalityRuleDefaultsForCategory(category):
+    global category_timers_time
+    default_seasonality_rule_data = {
+        "active": False,
+        "durationInYears": None,
+        "priceMax": None,
+        "priceMin": None,
+        "timeZone": "",
+        "seasonalPriceChanges": {}
+    }
+    try:
+        default_seasonality_rule_json = json.dumps(default_seasonality_rule_data)
+        # retrieve all items in the specified category
+        items = getItemsByCategory(category)
+        # update manual_time_rule for each item
+        for item in items:
+            item_id = item[0]
+            conn = psycopg2.connect(
+                host=DB_HOST,
+                port=DB_PORT,
+                user=DB_USER,
+                password=DB_PASSWORD,
+                database=DB_NAME
+            )
+            cur = conn.cursor()
+            update_query = """
+                UPDATE storeitems
+                SET manual_seasonality_rule = %s
+                WHERE id = %s
+            """
+            cur.execute(update_query, (default_seasonality_rule_json, item_id))
+            conn.commit()
+            cur.close()
+            conn.close()
+        return True
+    except psycopg2.Error as e:
+        print("Error updating manual_seasonality_rule:", e)
+        return False
