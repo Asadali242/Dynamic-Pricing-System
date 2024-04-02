@@ -2,14 +2,14 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import sys
 import logging
-from database import getItemsByCategory, getItems, updateManualTimeRuleForCategory, updateManualSeasonalityRuleForCategory, manualHourlyPriceUpdate
+from database import manualSeasonalPriceUpdate, getItemsByCategory, getItems, updateManualTimeRuleForCategory, updateManualSeasonalityRuleForCategory, manualHourlyPriceUpdate
 import json
 import schedule
 import time
 import threading
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
-
+import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -108,11 +108,32 @@ def hourly_update():
     manualHourlyPriceUpdate()
     print("manualHourlyPriceUpdate completed.") 
 
+def seasonal_update():
+    current_month = datetime.datetime.now().month
+    if current_month == 12:  # December (Winter)
+        print("Running manualSeasonalPriceUpdate...")
+        manualSeasonalPriceUpdate('Winter')
+        print("manualSeasonalPriceUpdate completed.") 
+    elif current_month == 3:  # March (Spring)
+        print("Running manualSeasonalPriceUpdate...")
+        manualSeasonalPriceUpdate('Spring')
+        print("manualSeasonalPriceUpdate completed.") 
+    elif current_month == 6:  # June (Summer)
+        print("Running manualSeasonalPriceUpdate...")
+        manualSeasonalPriceUpdate('Summer')
+        print("manualSeasonalPriceUpdate completed.") 
+    elif current_month == 9:  # September (Fall)
+        print("Running manualSeasonalPriceUpdate...")
+        manualSeasonalPriceUpdate('Fall')
+        print("manualSeasonalPriceUpdate completed.") 
+
 def new_minute_update():
     print("A minute has passed")
 
 scheduler.add_job(hourly_update, 'cron', hour='*')  
 scheduler.add_job(new_minute_update, 'cron', minute='*')
+scheduler.add_job(seasonal_update, 'cron', month='3,6,9,12', day='1', hour='0', minute='0')  
+
 # Register the shutdown function
 atexit.register(lambda: scheduler.shutdown())
 

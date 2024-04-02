@@ -44,6 +44,30 @@ def fetchActiveManualHourRuleStoreItems():
         print("Error fetching active manual hour rule store items:", e)
         return []   
 
+def fetchActiveManualSeasonalityRuleStoreItems():
+    try:
+        conn = psycopg2.connect(
+            host=DB_HOST,
+            port=DB_PORT,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DB_NAME
+        )
+        cur = conn.cursor()
+        query = query = """
+            SELECT id, manual_seasonality_rule
+            FROM storeitems
+            WHERE manual_seasonality_rule->>'active' = 'true'
+        """
+        cur.execute(query)
+        relevant_store_items = cur.fetchall()
+        cur.close()
+        conn.close()
+        return relevant_store_items
+    except psycopg2.Error as e:
+        print("Error fetching active manual seasonality rule store items:", e)
+        return []
+    
 def fetchItemPriceFromDatabase(item_id):
     try:
         # Establish connection to the database

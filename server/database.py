@@ -2,7 +2,7 @@ import psycopg2
 from psycopg2 import Error
 import json
 import datetime
-from database_helper_functions import getCurrentHour, fetchActiveManualHourRuleStoreItems, fetchItemPriceFromDatabase, updateItemPriceInDatabase
+from database_helper_functions import fetchActiveManualSeasonalityRuleStoreItems, getCurrentHour, fetchActiveManualHourRuleStoreItems, fetchItemPriceFromDatabase, updateItemPriceInDatabase
 from decimal import Decimal
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
@@ -74,7 +74,7 @@ def updateManualTimeRuleForCategory(category, rule_data):
     try:
         # Logic for setting timer based on duration and ending the rule upon time elapsing
         rule_data_json = json.loads(rule_data)
-        duration_in_days = rule_data_json.get('durationInDays')
+        duration_in_days = int(rule_data_json.get('durationInDays', 0))
         print("Duration in days:", duration_in_days)
         
         if duration_in_days is not None:
@@ -122,16 +122,18 @@ def updateManualSeasonalityRuleForCategory(category, rule_data):
     try:
         # Logic for setting timer based on duration and ending the rule upon time elapsing
         rule_data_json = json.loads(rule_data)
-        duration_in_years = rule_data_json.get('durationInYears')
+        duration_in_years = int(rule_data_json.get('durationInYears', 0))
         print("Duration in years:", duration_in_years)
         
         if duration_in_years is not None:
             # If a timer already exists for these items, overwrite it
             if category in category_timers_seasonality:
                 category_timers_seasonality[category].remove()
+                print("removing previous timers")
             
             # Calculate the datetime when the rule should be reverted back to default
             expiry_datetime = datetime.now() + timedelta(days=365 * duration_in_years)
+            print("expiry_datetime:", expiry_datetime)
             
             # Schedule a one-time job to revert the rule back to default
             timer = scheduler.add_job(restoreSeasonalityRuleDefaultsForCategory, 'date', run_date=expiry_datetime, args=[category])
@@ -165,7 +167,6 @@ def updateManualSeasonalityRuleForCategory(category, rule_data):
     except psycopg2.Error as e:
         print("Error updating manual_seasonality_rule:", e)
         return False
-
 
 def manualHourlyPriceUpdate():
     relevant_store_items = fetchActiveManualHourRuleStoreItems()
@@ -203,6 +204,39 @@ def manualHourlyPriceUpdate():
 
                     #add func to add price change history info to price history table
 
+def manualSeasonalPriceUpdate(season):
+    relevant_store_items = fetchActiveManualSeasonalityRuleStoreItems()
+    print("relevant store items:", relevant_store_items)
+    for item_id, manual_seasonality_rule in relevant_store_items:
+        seasonal_price_changes = manual_seasonality_rule.get('seasonalPriceChanges', [])
+        print(f"Item ID: {item_id}")
+        print("Current Season:", season)
+        
+        # Iterate over each seasonal change dictionary
+        for change in seasonal_price_changes:
+            if change['season'] == season:
+                price_type = change.get('type')
+                percent_change = change.get('percent')
+                
+                # Change the item's price based on the seasonal change
+                if price_type == '+':
+                    item_price = fetchItemPriceFromDatabase(item_id)
+                    print("Current item price:", item_price)
+                    new_price = item_price * (Decimal('1') + Decimal(percent_change) / Decimal('100'))
+                    print("New item price:", new_price)
+                    updateItemPriceInDatabase(item_id, new_price)
+                    #add func to add price change history info to price history table
+                elif price_type == '-':
+                    item_price = fetchItemPriceFromDatabase(item_id)
+                    print("Current item price:", item_price)
+                    new_price = item_price * (Decimal('1') - Decimal(percent_change) / Decimal('100'))
+                    print("New item price:", new_price)
+                    updateItemPriceInDatabase(item_id, new_price)
+                    #add func to add price change history info to price history table
+                
+                print(f"Prices updated for {season} by {percent_change}%")
+                break  # Exit the loop after finding the matching season
+        
 def restoreTimeRuleDefaultsForCategory(category):
     global category_timers_time
     default_time_rule_data = {

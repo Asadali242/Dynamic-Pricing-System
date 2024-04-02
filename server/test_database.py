@@ -1,4 +1,4 @@
-from database import restoreTimeRuleDefaultsForCategory, restoreSeasonalityRuleDefaultsForCategory, updateManualSeasonalityRuleForCategory, getItemsByCategory, getItems, updateManualTimeRuleForCategory, manualHourlyPriceUpdate
+from database import manualSeasonalPriceUpdate, restoreTimeRuleDefaultsForCategory, restoreSeasonalityRuleDefaultsForCategory, updateManualSeasonalityRuleForCategory, getItemsByCategory, getItems, updateManualTimeRuleForCategory, manualHourlyPriceUpdate
 import json
 import unittest
 
@@ -6,7 +6,7 @@ class TestDatabaseFunctions(unittest.TestCase):
     #default seasonality rule data
     default_seasonality_rule_data = {
         "active": False,
-        "durationInYears": None,
+        "durationInYears": 1,
         "priceMax": None,
         "priceMin": None,
         "timeZone": "",
@@ -16,7 +16,7 @@ class TestDatabaseFunctions(unittest.TestCase):
     #default time of day rule data
     default_time_rule_data = {
         "active": False,
-        "durationInDays": None,
+        "durationInDays": 1,
         "priceMax": None,
         "priceMin": None,
         "timeZone": "",
@@ -38,6 +38,20 @@ class TestDatabaseFunctions(unittest.TestCase):
         }
     }
 
+    #sample seasonality rule data
+    sample_seasonality_rule_data = {
+        "active": True,
+        "durationInYears": 3,
+        "priceMax": 10,
+        "priceMin": 4,
+        "timeZone": "EST",
+        "seasonalPriceChanges": [
+            {"season": "Spring", "type": "+", "percent": 1},
+            {"season": "Summer", "type": "-", "percent": 2},
+            {"season": "Fall", "type": "+", "percent": 4},
+            {"season": "Winter", "type": "+", "percent": 3}
+        ]
+    }
 
     #list all store-items in chicken category
     items = getItemsByCategory('Chicken')
@@ -52,10 +66,9 @@ class TestDatabaseFunctions(unittest.TestCase):
     print("\n")
 
     #time rule database update test
-    sample_time_rule_data_json = json.dumps(sample_time_rule_data)
     default_time_rule_data_json = json.dumps(default_time_rule_data)
-
-    update_manual_time_rule_result = updateManualTimeRuleForCategory('Snacks', sample_time_rule_data_json)
+    sample_time_rule_data_json = json.dumps(sample_time_rule_data)
+    update_manual_time_rule_result = updateManualTimeRuleForCategory('Snacks', default_time_rule_data_json)
     if update_manual_time_rule_result:
         print("Manual time rule updated successfully.")
     else:
@@ -63,6 +76,7 @@ class TestDatabaseFunctions(unittest.TestCase):
 
     #seasonality rule database update test
     default_seasonality_rule_data_json = json.dumps(default_seasonality_rule_data)
+    sample_seasonality_rule_data_json = json.dumps(sample_seasonality_rule_data)
     update_manual_seasonality_rule_result = updateManualSeasonalityRuleForCategory('Snacks', default_seasonality_rule_data_json)
     if update_manual_seasonality_rule_result:
         print("Manual seasonality rule updated successfully.")
@@ -90,5 +104,11 @@ class TestDatabaseFunctions(unittest.TestCase):
         #manualHourlyPriceUpdate()
         print("Test for manualHourlyPriceUpdate function completed.")
 
+    #seasonal price update test
+    def test_seasonal_price_update_display(self):
+        print("Running test for manualseasonalPriceUpdate function...")
+        #careful, the below function will actually change database price values
+        #manualSeasonalPriceUpdate('Winter')
+        print("Test for manualHourlyPriceUpdate function completed.")
 if __name__ == '__main__':
     unittest.main()
