@@ -2,6 +2,9 @@ import json
 from datetime import datetime
 import psycopg2
 from psycopg2 import Error
+import datetime
+import pytz
+from decimal import Decimal
 
 DB_HOST = "lula-dynamicpricing-testdb.ca3vbbjlumqp.us-east-1.rds.amazonaws.com"
 DB_PORT = 5432
@@ -9,30 +12,13 @@ DB_USER = "lulapricingtest"
 DB_PASSWORD = "luladbtest"
 DB_NAME = "postgres"
 
-def getTimeZoneOffset(timezone):
-    current_offset = datetime.datetime.now(datetime.timezone.utc).astimezone(timezone).utcoffset().total_seconds()
-    offset_hours = current_offset / 3600
-    return offset_hours
-
-def getCurrentHour(timezone='UTC'):
-    # get the current time in the specified timezone
-    current_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=getTimeZoneOffset(timezone))))
-    
-    # Extract the current hour
-    current_hour = current_time.hour
-    
-    return current_hour
-
-def adjustHourForTimeZone(hour, time_zone):
-    #current time in the specified time zone
-    current_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=getTimeZoneOffset(time_zone))))   
-    #current hour in the specified time zone
-    current_hour_adjusted = current_time.hour
-    #difference between the current hour and the input hour
-    hour_difference = current_hour_adjusted - current_time.hour
-    #adjusted input hour based on the time zone difference
-    adjusted_hour = (hour + hour_difference) % 24
-    return adjusted_hour
+def getCurrentHour(timezone):
+    if timezone.upper() == 'EST':
+        timezone = 'US/Eastern'
+    if timezone.upper() == 'PST':
+        timezone = 'US/Pacific'
+    current_time = datetime.datetime.now(pytz.timezone(timezone))
+    return current_time.hour
 
 def fetchActiveManualHourRuleStoreItems():
     try:
@@ -88,7 +74,7 @@ def fetchItemPriceFromDatabase(item_id):
         # is this something we need to change?
 
         # convert price from cents to dollars with decimal point
-        price_in_dollars = price_in_cents / 100.0
+        price_in_dollars = Decimal(price_in_cents) / Decimal('100')
         
         return price_in_dollars
     except psycopg2.Error as e:
@@ -107,13 +93,16 @@ def updateItemPriceInDatabase(item_id, new_price):
         )
         cur = conn.cursor()
 
+        # proper rounding (2.506 becomes 251 in database)
+        new_price_cents = round(new_price * 100)
+
         # Update item price in the database
         query = """
             UPDATE storeitems
             SET price = %s
             WHERE id = %s
         """
-        cur.execute(query, (new_price * 100, item_id))  # Multiply new_price by 100 to convert to cents
+        cur.execute(query, (new_price_cents, item_id))
         conn.commit()  # Commit the transaction
 
         # Close cursor and connection

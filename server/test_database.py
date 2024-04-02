@@ -1,4 +1,4 @@
-from database import getItemsByCategory, getItems, updateManualTimeRuleForCategory
+from database import getItemsByCategory, getItems, updateManualTimeRuleForCategory, manualHourlyPriceUpdate
 import json
 import unittest
 
@@ -47,11 +47,19 @@ class TestDatabaseFunctions(unittest.TestCase):
     default_rule_data_json = json.dumps(default_rule_data)
 
     #update manual_time_rule for all store-items in a category
-    update_manual_time_rule_result = updateManualTimeRuleForCategory('Beverages', default_rule_data_json)
+    update_manual_time_rule_result = updateManualTimeRuleForCategory('Snacks', default_rule_data_json)
     if update_manual_time_rule_result:
         print("Manual time rule updated successfully.")
     else:
         print("Failed to update manual time rule.")
+
+    def test_hourly_price_update_display(self):
+        print("Running test for manualHourlyPriceUpdate function...")
+        #careful, the below function will actually change database price values if there is a time rule for this hour
+        #manualHourlyPriceUpdate()
+        print("Test for manualHourlyPriceUpdate function completed.")
+
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -6,9 +6,16 @@ from database import getItemsByCategory, getItems, updateManualTimeRuleForCatego
 import json
 import schedule
 import time
+import threading
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
+
 
 app = Flask(__name__)
 CORS(app)
+
+scheduler = BackgroundScheduler()
+scheduler.start()
 
 @app.route('/items_by_category', methods=['GET'])
 def items_by_category():
@@ -96,16 +103,19 @@ def clear_rules():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-   
 def hourly_update():
     print("Running manualHourlyPriceUpdate...")
     manualHourlyPriceUpdate()
     print("manualHourlyPriceUpdate completed.") 
 
-schedule.every().hour.at(":00").do(hourly_update)
-while True:
-    schedule.run_pending()
-    time.sleep(60) 
+def new_minute_update():
+    print("A minute has passed")
+
+scheduler.add_job(hourly_update, 'cron', hour='*')  
+scheduler.add_job(new_minute_update, 'cron', minute='*')
+# Register the shutdown function
+atexit.register(lambda: scheduler.shutdown())
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5000, use_reloader=False)
+
