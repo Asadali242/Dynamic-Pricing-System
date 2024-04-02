@@ -1,12 +1,6 @@
 .dashboard {
-    background-color: #f0f0f0; /* Light background color for the dashboard */
-    border: 2px solid #333; /* Darker outline color */
-    padding: 20px;
     text-align: center;
-    margin-bottom: 20px; /* Add margin to separate dashboard from the rest of the content */
-  }
-  
-  .pricing-menu {
+    background-color: #d0cbc4b6;
     padding: 20px;
+    margin-bottom: 20px;
   }
-  
