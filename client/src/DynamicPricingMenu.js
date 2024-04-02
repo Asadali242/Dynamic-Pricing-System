@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; // Import useState hook from React library
 import './DynamicPricingMenu.css'; // Import CSS file for styling
 
 function DynamicPricingMenu() {
@@ -15,7 +15,30 @@ function DynamicPricingMenu() {
       {/* Dashboard */}
       <div className="dashboard">
         <h2>Dashboard</h2>
-        <p>Metrics coming soon</p>
+        {/* Container for dashboard sections */}
+        <div className="dashboard-sections">
+          {/* Individual dashboard sections */}
+          <div className="dashboard-section">
+            <h3>Products Sold</h3>
+            {/* Content for Products Sold section */}
+          </div>
+          <div className="dashboard-section">
+            <h3>Missed Sales</h3>
+            {/* Content for Missed Sales section */}
+          </div>
+          <div className="dashboard-section">
+            <h3>Profit</h3>
+            {/* Content for Profit section */}
+          </div>
+          <div className="dashboard-section">
+            <h3>Total Sales</h3>
+            {/* Content for Total Sales section */}
+          </div>
+          <div className="dashboard-section">
+            <h3>Margin</h3>
+            {/* Content for Margin section */}
+          </div>
+        </div>
       </div>
 
       {/* View Enrolled Products button */}

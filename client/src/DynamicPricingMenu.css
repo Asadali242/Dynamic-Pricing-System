@@ -7,6 +7,24 @@
   margin-bottom: 20px;
 }
 
+.dashboard-sections {
+  display: flex; /* Change to flex */
+  justify-content: space-between; /* Align sections with space between them */
+}
+
+.dashboard-section {
+  flex: 1; /* Distribute space evenly among sections */
+  background-color: #ffffff; /* Add background color for better visibility */
+  padding: 10px; /* Add padding for spacing */
+  margin: 0 5px; /* Add margin for spacing between sections */
+  border: 1px solid #ccc; /* Add border for visual separation */
+  border-radius: 5px; /* Add border radius for rounded corners */
+}
+
+.dashboard-section h3 {
+  margin-top: 0; /* Remove default margin for better alignment */
+}
+
 .view-enrolled-products-button-container {
   display: flex;
   justify-content: center;
