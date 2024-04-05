@@ -1,4 +1,4 @@
-from database import manualSeasonalPriceUpdate, restoreTimeRuleDefaultsForCategory, restoreSeasonalityRuleDefaultsForCategory, updateManualSeasonalityRuleForCategory, getItemsByCategory, getItems, updateManualTimeRuleForCategory, manualHourlyPriceUpdate
+from database import addPriceHistoryEntry, manualSeasonalPriceUpdate, restoreTimeRuleDefaultsForCategory, restoreSeasonalityRuleDefaultsForCategory, updateManualSeasonalityRuleForCategory, getItemsByCategory, getItems, updateManualTimeRuleForCategory, manualHourlyPriceUpdate
 import json
 import unittest
 
@@ -110,5 +110,14 @@ class TestDatabaseFunctions(unittest.TestCase):
         #careful, the below function will actually change database price values
         #manualSeasonalPriceUpdate('Winter')
         print("Test for manualHourlyPriceUpdate function completed.")
+
+    def test_price_history_update_time(self):
+        addPriceHistoryEntry('10000000-0000-0000-0000-000000000000', 2.49, 2.99, rule={'manual': ('manual', 'time')})
+
+    def test_price_history_update_seasonality(self):
+        addPriceHistoryEntry('10000000-0000-0000-0000-000000000000', 100, 400, rule={'manual': ('manual', 'seasonality')})
+
+    def test_price_history_update_none(self):
+        addPriceHistoryEntry('10000000-0000-0000-0000-000000000000', 3.241, 5, rule=None)
 if __name__ == '__main__':
     unittest.main()

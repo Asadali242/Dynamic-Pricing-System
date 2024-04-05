@@ -7,6 +7,7 @@ from decimal import Decimal
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 from datetime import datetime, timedelta
+import uuid
 category_timers_time = {}
 category_timers_seasonality = {}
 scheduler = BackgroundScheduler()
@@ -192,8 +193,10 @@ def manualHourlyPriceUpdate():
                     new_price = item_price * (Decimal('1') + Decimal(change['percent']) / Decimal('100'))
                     print("New item price:", new_price)
                     updateItemPriceInDatabase(item_id, new_price)
-
-                    #add func to add price change history info to price history table
+                    
+                    #func to add price change history info to price history table
+                    addPriceHistoryEntry(item_id, item_price, new_price, rule={'manual': ('manual', 'time-based')})
+                    
                 elif change['type'] == '-':
                     # Assuming item price is fetched from database
                     item_price = fetchItemPriceFromDatabase(item_id)
@@ -202,8 +205,9 @@ def manualHourlyPriceUpdate():
                     print("New item price:", new_price)
                     updateItemPriceInDatabase(item_id, new_price)
 
-                    #add func to add price change history info to price history table
-
+                    #func to add price change history info to price history table
+                    addPriceHistoryEntry(item_id, item_price, new_price, rule={'manual': ('manual', 'time-based')})
+                   
 def manualSeasonalPriceUpdate(season):
     relevant_store_items = fetchActiveManualSeasonalityRuleStoreItems()
     print("relevant store items:", relevant_store_items)
@@ -225,14 +229,18 @@ def manualSeasonalPriceUpdate(season):
                     new_price = item_price * (Decimal('1') + Decimal(percent_change) / Decimal('100'))
                     print("New item price:", new_price)
                     updateItemPriceInDatabase(item_id, new_price)
-                    #add func to add price change history info to price history table
+                    
+                    #func to add price change history info to price history table
+                    addPriceHistoryEntry(item_id, item_price, new_price, rule={'manual': ('manual', 'seasonality')})
                 elif price_type == '-':
                     item_price = fetchItemPriceFromDatabase(item_id)
                     print("Current item price:", item_price)
                     new_price = item_price * (Decimal('1') - Decimal(percent_change) / Decimal('100'))
                     print("New item price:", new_price)
                     updateItemPriceInDatabase(item_id, new_price)
-                    #add func to add price change history info to price history table
+                    
+                    #func to add price change history info to price history table
+                    addPriceHistoryEntry(item_id, item_price, new_price, rule={'manual': ('manual', 'seasonality')})
                 
                 print(f"Prices updated for {season} by {percent_change}%")
                 break  # Exit the loop after finding the matching season
@@ -314,3 +322,41 @@ def restoreSeasonalityRuleDefaultsForCategory(category):
     except psycopg2.Error as e:
         print("Error updating manual_seasonality_rule:", e)
         return False
+
+def addPriceHistoryEntry(store_item_id, price_before, price_after, rule=None):
+    try:
+        conn = psycopg2.connect(
+            host=DB_HOST,
+            port=DB_PORT,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DB_NAME
+        )
+        cur = conn.cursor()
+
+        #random unique id for the price history entry
+        price_history_id = str(uuid.uuid4())
+
+        #prices converted from dollars to cents
+        price_before_cents = int(price_before * 100)
+        price_after_cents = int(price_after * 100)
+
+        #current date and time
+        createdate = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        #JSON objects for price_update and rule
+        price_update = json.dumps({'priceBefore': price_before_cents, 'priceAfter': price_after_cents})
+        rule_json = json.dumps(rule) if rule else None
+
+        #new entry into the pricehistory table
+        cur.execute("""
+            INSERT INTO pricehistory (id, store_item_id, createdate, price_update, rule)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (price_history_id, store_item_id, createdate, price_update, rule_json))
+        conn.commit()
+        print("Price history entry added successfully with following fields:", price_history_id, store_item_id, createdate, price_update, rule_json)
+    except Exception as e:
+        print("Error adding price history entry:", e)
+    finally:
+        cur.close()
+        conn.close()
