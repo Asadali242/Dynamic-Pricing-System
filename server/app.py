@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import sys
 import logging
-from database import manualSeasonalPriceUpdate, getItemsByCategory, getItems, updateManualTimeRuleForCategory, updateManualSeasonalityRuleForCategory, manualHourlyPriceUpdate
+import database
 import json
 import schedule
 import time
@@ -21,7 +21,7 @@ scheduler.start()
 def items_by_category():
     try:
         category = request.args.get('category')
-        items = getItemsByCategory(category)
+        items = database.getItemsByCategory(category)
         return jsonify(items)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -30,7 +30,7 @@ def items_by_category():
 def items_by_alphabet():
     try:
         limit = request.args.get('limit', default=20, type=int)
-        items = getItems(limit)
+        items = database.getItems(limit)
         return jsonify(items)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -60,7 +60,7 @@ def create_rule():
                 "timeZone": timezone,
                 "hourlyPriceChanges": hourlyPriceChanges
             }
-            updateManualTimeRuleForCategory(category, json.dumps(manual_time_rule_data))
+            database.updateManualTimeRuleForCategory(category, json.dumps(manual_time_rule_data))
         if ruleType == "Seasonality":
             manual_seasonality_rule_data = {
                 "active": True,  
@@ -70,7 +70,7 @@ def create_rule():
                 "timeZone": timezone,
                 "seasonalPriceChanges": seasonalPriceChanges
             }
-            updateManualSeasonalityRuleForCategory(category, json.dumps(manual_seasonality_rule_data))
+            database.updateManualSeasonalityRuleForCategory(category, json.dumps(manual_seasonality_rule_data))
         return jsonify({'message': 'rule created successfully'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -98,41 +98,41 @@ def clear_rules():
                 "timeZone": "",
                 "seasonalPriceChanges": {}
             }
-        updateManualTimeRuleForCategory(category, json.dumps(default_time_rule_data))
-        updateManualSeasonalityRuleForCategory(category, json.dumps(default_seasonality_rule_data))
+        database.updateManualTimeRuleForCategory(category, json.dumps(default_time_rule_data))
+        database.updateManualSeasonalityRuleForCategory(category, json.dumps(default_seasonality_rule_data))
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 def hourly_update():
     print("Running manualHourlyPriceUpdate...")
-    manualHourlyPriceUpdate()
+    database.manualHourlyPriceUpdate()
     print("manualHourlyPriceUpdate completed.") 
 
 def seasonal_update():
     current_month = datetime.datetime.now().month
     if current_month == 12:  # December (Winter)
         print("Running manualSeasonalPriceUpdate...")
-        manualSeasonalPriceUpdate('Winter')
+        database.manualSeasonalPriceUpdate('Winter')
         print("manualSeasonalPriceUpdate completed.") 
     elif current_month == 3:  # March (Spring)
         print("Running manualSeasonalPriceUpdate...")
-        manualSeasonalPriceUpdate('Spring')
+        database.manualSeasonalPriceUpdate('Spring')
         print("manualSeasonalPriceUpdate completed.") 
     elif current_month == 6:  # June (Summer)
         print("Running manualSeasonalPriceUpdate...")
-        manualSeasonalPriceUpdate('Summer')
+        database.manualSeasonalPriceUpdate('Summer')
         print("manualSeasonalPriceUpdate completed.") 
     elif current_month == 9:  # September (Fall)
         print("Running manualSeasonalPriceUpdate...")
-        manualSeasonalPriceUpdate('Fall')
+        database.manualSeasonalPriceUpdate('Fall')
         print("manualSeasonalPriceUpdate completed.") 
 
 def new_minute_update():
     print("A minute has passed")
 
-scheduler.add_job(hourly_update, 'cron', hour='*')  
-scheduler.add_job(new_minute_update, 'cron', minute='*')
-scheduler.add_job(seasonal_update, 'cron', month='3,6,9,12', day='1', hour='0', minute='0')  
+scheduler.add_job(database.hourly_update, 'cron', hour='*')  
+scheduler.add_job(database.new_minute_update, 'cron', minute='*')
+scheduler.add_job(database.seasonal_update, 'cron', month='3,6,9,12', day='1', hour='0', minute='0')  
 
 # Register the shutdown function
 atexit.register(lambda: scheduler.shutdown())

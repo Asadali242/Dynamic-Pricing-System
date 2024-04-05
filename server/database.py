@@ -2,7 +2,7 @@ import psycopg2
 from psycopg2 import Error
 import json
 import datetime
-from database_helper_functions import fetchActiveManualSeasonalityRuleStoreItems, getCurrentHour, fetchActiveManualHourRuleStoreItems, fetchItemPriceFromDatabase, updateItemPriceInDatabase
+import database_helper_functions
 from decimal import Decimal
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
@@ -93,7 +93,7 @@ def updateManualTimeRuleForCategory(category, rule_data):
             print("Timer info:", timer)
 
         # retrieve all items in the specified category
-        items = getItemsByCategory(category)
+        items = database_helper_functions.getItemsByCategory(category)
         # update manual_time_rule for each item
         for item in items:
             item_id = item[0]
@@ -170,11 +170,11 @@ def updateManualSeasonalityRuleForCategory(category, rule_data):
         return False
 
 def manualHourlyPriceUpdate():
-    relevant_store_items = fetchActiveManualHourRuleStoreItems()
+    relevant_store_items = database_helper_functions.fetchActiveManualHourRuleStoreItems()
     for item_id, manual_time_rule in relevant_store_items:
         hourly_price_changes = manual_time_rule.get('hourlyPriceChanges', [])
         time_zone = manual_time_rule.get('timeZone')
-        current_hour = getCurrentHour(time_zone)
+        current_hour = database_helper_functions.getCurrentHour(time_zone)
 
         print(f"Item ID: {item_id}")
         print("Time Zone:", time_zone)
@@ -188,28 +188,28 @@ def manualHourlyPriceUpdate():
                 print("Current hour matches rule hour.")
                 #change item's price based on the change type and percent
                 if change['type'] == '+':
-                    item_price = fetchItemPriceFromDatabase(item_id)
+                    item_price = database_helper_functions.fetchItemPriceFromDatabase(item_id)
                     print("Current item price:", item_price)
                     new_price = item_price * (Decimal('1') + Decimal(change['percent']) / Decimal('100'))
                     print("New item price:", new_price)
-                    updateItemPriceInDatabase(item_id, new_price)
+                    database_helper_functions.updateItemPriceInDatabase(item_id, new_price)
                     
                     #func to add price change history info to price history table
                     addPriceHistoryEntry(item_id, item_price, new_price, rule={'manual': ('manual', 'time-based')})
                     
                 elif change['type'] == '-':
                     # Assuming item price is fetched from database
-                    item_price = fetchItemPriceFromDatabase(item_id)
+                    item_price = database_helper_functions.fetchItemPriceFromDatabase(item_id)
                     print("Current item price:", item_price)
                     new_price = item_price * (Decimal('1') - Decimal(change['percent']) / Decimal('100'))
                     print("New item price:", new_price)
-                    updateItemPriceInDatabase(item_id, new_price)
+                    database_helper_functions.updateItemPriceInDatabase(item_id, new_price)
 
                     #func to add price change history info to price history table
                     addPriceHistoryEntry(item_id, item_price, new_price, rule={'manual': ('manual', 'time-based')})
                    
 def manualSeasonalPriceUpdate(season):
-    relevant_store_items = fetchActiveManualSeasonalityRuleStoreItems()
+    relevant_store_items = database_helper_functions.fetchActiveManualSeasonalityRuleStoreItems()
     print("relevant store items:", relevant_store_items)
     for item_id, manual_seasonality_rule in relevant_store_items:
         seasonal_price_changes = manual_seasonality_rule.get('seasonalPriceChanges', [])
@@ -224,20 +224,20 @@ def manualSeasonalPriceUpdate(season):
                 
                 # Change the item's price based on the seasonal change
                 if price_type == '+':
-                    item_price = fetchItemPriceFromDatabase(item_id)
+                    item_price = database_helper_functions.fetchItemPriceFromDatabase(item_id)
                     print("Current item price:", item_price)
                     new_price = item_price * (Decimal('1') + Decimal(percent_change) / Decimal('100'))
                     print("New item price:", new_price)
-                    updateItemPriceInDatabase(item_id, new_price)
+                    database_helper_functions.updateItemPriceInDatabase(item_id, new_price)
                     
                     #func to add price change history info to price history table
                     addPriceHistoryEntry(item_id, item_price, new_price, rule={'manual': ('manual', 'seasonality')})
                 elif price_type == '-':
-                    item_price = fetchItemPriceFromDatabase(item_id)
+                    item_price = database_helper_functions.fetchItemPriceFromDatabase(item_id)
                     print("Current item price:", item_price)
                     new_price = item_price * (Decimal('1') - Decimal(percent_change) / Decimal('100'))
                     print("New item price:", new_price)
-                    updateItemPriceInDatabase(item_id, new_price)
+                    database_helper_functions.updateItemPriceInDatabase(item_id, new_price)
                     
                     #func to add price change history info to price history table
                     addPriceHistoryEntry(item_id, item_price, new_price, rule={'manual': ('manual', 'seasonality')})
@@ -259,7 +259,7 @@ def restoreTimeRuleDefaultsForCategory(category):
     # Update the manual time rule for the category with defaults 
     try:
         default_time_rule_json = json.dumps(default_time_rule_data)
-        items = getItemsByCategory(category)
+        items = database_helper_functions.getItemsByCategory(category)
         for item in items:
             item_id = item[0]
             conn = psycopg2.connect(
@@ -297,7 +297,7 @@ def restoreSeasonalityRuleDefaultsForCategory(category):
     try:
         default_seasonality_rule_json = json.dumps(default_seasonality_rule_data)
         # retrieve all items in the specified category
-        items = getItemsByCategory(category)
+        items = database_helper_functions.getItemsByCategory(category)
         # update manual_time_rule for each item
         for item in items:
             item_id = item[0]
