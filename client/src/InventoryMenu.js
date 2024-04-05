@@ -459,7 +459,7 @@ function InventoryMenu() {
                                 <button onClick={(e) => { e.stopPropagation(); handleRemoveHourRule(index); }}>Remove Rule</button>
                             </div>
                         ))}
-                        {hourRules.length < 24 && (
+                        {hourRules.length <= 24 && (
                             <button onClick={handleAddHourRule}>Add Hour Rule</button>
                         )}
                     </div>
