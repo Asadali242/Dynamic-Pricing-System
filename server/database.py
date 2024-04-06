@@ -20,15 +20,21 @@ DB_USER = "lulapricingtest"
 DB_PASSWORD = "luladbtest"
 DB_NAME = "postgres"
 
-def getItemsByCategory(category):
-    try:
-        conn = psycopg2.connect(
+def connect_to_database():
+    conn = psycopg2.connect(
             host=DB_HOST,
             port=DB_PORT,
             user=DB_USER,
             password=DB_PASSWORD,
             database=DB_NAME
         )
+    return conn
+
+def getItemsByCategory(category):
+    conn = None
+    cur = None
+    try:
+        conn = connect_to_database()
         cur = conn.cursor()
         query = """
             SELECT si.id AS store_item_id, si.name AS store_item_name, si.price AS store_item_price
@@ -39,22 +45,21 @@ def getItemsByCategory(category):
         """
         cur.execute(query, (category,))
         items = cur.fetchall()
-        cur.close()
-        conn.close()
         return items
     except psycopg2.Error as e:
         print("Error fetching items:", e)
         return []
+    finally:
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
     
 def getItems(limit=20):
+    conn = None
+    cur = None
     try:
-        conn = psycopg2.connect(
-            host=DB_HOST,
-            port=DB_PORT,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            database=DB_NAME
-        )
+        conn = connect_to_database()
         cur = conn.cursor()
         query = """
             SELECT si.id AS store_item_id, si.name AS store_item_name, si.price AS store_item_price
@@ -64,14 +69,19 @@ def getItems(limit=20):
         """
         cur.execute(query, (limit,))
         items = cur.fetchall()
-        cur.close()
-        conn.close()
         return items
     except psycopg2.Error as e:
         print("Error fetching items:", e)
         return []
+    finally:
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
 
 def updateManualTimeRuleForCategory(category, rule_data):
+    conn = None
+    cur = None
     try:
         # Logic for setting timer based on duration and ending the rule upon time elapsing
         rule_data_json = json.loads(rule_data)
@@ -93,17 +103,11 @@ def updateManualTimeRuleForCategory(category, rule_data):
             print("Timer info:", timer)
 
         # retrieve all items in the specified category
-        items = database_helper_functions.getItemsByCategory(category)
+        items = getItemsByCategory(category)
         # update manual_time_rule for each item
         for item in items:
             item_id = item[0]
-            conn = psycopg2.connect(
-                host=DB_HOST,
-                port=DB_PORT,
-                user=DB_USER,
-                password=DB_PASSWORD,
-                database=DB_NAME
-            )
+            conn = connect_to_database()
             cur = conn.cursor()
             update_query = """
                 UPDATE storeitems
@@ -112,14 +116,19 @@ def updateManualTimeRuleForCategory(category, rule_data):
             """
             cur.execute(update_query, (rule_data, item_id))
             conn.commit()
-            cur.close()
-            conn.close()
         return True
     except psycopg2.Error as e:
         print("Error updating manual_time_rule:", e)
         return False
+    finally:
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
 
 def updateManualSeasonalityRuleForCategory(category, rule_data):
+    conn = None
+    cur = None
     try:
         # Logic for setting timer based on duration and ending the rule upon time elapsing
         rule_data_json = json.loads(rule_data)
@@ -147,13 +156,7 @@ def updateManualSeasonalityRuleForCategory(category, rule_data):
         # update manual_time_rule for each item
         for item in items:
             item_id = item[0]
-            conn = psycopg2.connect(
-                host=DB_HOST,
-                port=DB_PORT,
-                user=DB_USER,
-                password=DB_PASSWORD,
-                database=DB_NAME
-            )
+            conn = connect_to_database()
             cur = conn.cursor()
             update_query = """
                 UPDATE storeitems
@@ -162,12 +165,15 @@ def updateManualSeasonalityRuleForCategory(category, rule_data):
             """
             cur.execute(update_query, (rule_data, item_id))
             conn.commit()
-            cur.close()
-            conn.close()
         return True
     except psycopg2.Error as e:
         print("Error updating manual_seasonality_rule:", e)
         return False
+    finally:
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
 
 def manualHourlyPriceUpdate():
     relevant_store_items = database_helper_functions.fetchActiveManualHourRuleStoreItems()
@@ -246,6 +252,8 @@ def manualSeasonalPriceUpdate(season):
                 break  # Exit the loop after finding the matching season
         
 def restoreTimeRuleDefaultsForCategory(category):
+    conn = None
+    cur = None
     global category_timers_time
     default_time_rule_data = {
         "active": False,
@@ -255,20 +263,14 @@ def restoreTimeRuleDefaultsForCategory(category):
         "timeZone": "",
         "hourlyPriceChanges": {}
     }
-
+    
     # Update the manual time rule for the category with defaults 
     try:
         default_time_rule_json = json.dumps(default_time_rule_data)
-        items = database_helper_functions.getItemsByCategory(category)
+        items = getItemsByCategory(category)
         for item in items:
             item_id = item[0]
-            conn = psycopg2.connect(
-                host=DB_HOST,
-                port=DB_PORT,
-                user=DB_USER,
-                password=DB_PASSWORD,
-                database=DB_NAME
-            )
+            conn = connect_to_database()
             cur = conn.cursor()
             update_query = """
                 UPDATE storeitems
@@ -277,14 +279,19 @@ def restoreTimeRuleDefaultsForCategory(category):
             """
             cur.execute(update_query, (default_time_rule_json, item_id))
             conn.commit()
-            cur.close()
-            conn.close()
         return True
     except psycopg2.Error as e:
         print("Error updating manual_time_rule:", e)
         return False
+    finally:
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
 
 def restoreSeasonalityRuleDefaultsForCategory(category):
+    conn = None
+    cur = None
     global category_timers_time
     default_seasonality_rule_data = {
         "active": False,
@@ -297,17 +304,11 @@ def restoreSeasonalityRuleDefaultsForCategory(category):
     try:
         default_seasonality_rule_json = json.dumps(default_seasonality_rule_data)
         # retrieve all items in the specified category
-        items = database_helper_functions.getItemsByCategory(category)
+        items = getItemsByCategory(category)
         # update manual_time_rule for each item
         for item in items:
             item_id = item[0]
-            conn = psycopg2.connect(
-                host=DB_HOST,
-                port=DB_PORT,
-                user=DB_USER,
-                password=DB_PASSWORD,
-                database=DB_NAME
-            )
+            conn = connect_to_database()
             cur = conn.cursor()
             update_query = """
                 UPDATE storeitems
@@ -316,22 +317,21 @@ def restoreSeasonalityRuleDefaultsForCategory(category):
             """
             cur.execute(update_query, (default_seasonality_rule_json, item_id))
             conn.commit()
-            cur.close()
-            conn.close()
         return True
     except psycopg2.Error as e:
         print("Error updating manual_seasonality_rule:", e)
         return False
+    finally:
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
 
 def addPriceHistoryEntry(store_item_id, price_before, price_after, rule=None):
+    conn = None
+    cur = None
     try:
-        conn = psycopg2.connect(
-            host=DB_HOST,
-            port=DB_PORT,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            database=DB_NAME
-        )
+        conn = connect_to_database()
         cur = conn.cursor()
 
         #random unique id for the price history entry
@@ -358,5 +358,7 @@ def addPriceHistoryEntry(store_item_id, price_before, price_after, rule=None):
     except Exception as e:
         print("Error adding price history entry:", e)
     finally:
-        cur.close()
-        conn.close()
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
