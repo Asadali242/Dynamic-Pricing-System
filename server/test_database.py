@@ -119,5 +119,11 @@ class TestDatabaseFunctions(unittest.TestCase):
 
     def test_price_history_update_none(self):
         database.addPriceHistoryEntry('10000000-0000-0000-0000-000000000000', 3.241, 5, rule=None)
+    
+
+
+    def test_fetch_data_for_time_rule_recommendations(self):
+        database.fetchDataForTimeRuleRecommendations()
+        
 if __name__ == '__main__':
     unittest.main()
