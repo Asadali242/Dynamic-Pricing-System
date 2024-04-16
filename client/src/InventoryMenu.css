@@ -4,7 +4,6 @@
   transform: translateX(calc(100% - 300px)); /* Adjust the value as needed */
   width: 300px;
   height: 100vh;
-  background-color: #ffffff;
   padding: 20px;
 }
   
@@ -23,7 +22,7 @@
   }
   
   .filter-button {
-    background-color: #4CAF50; /* Green background */
+    background-color: #c93e8d; /* Green background */
     border: none;
     color: white; /* White text */
     padding: 10px 20px; /* Padding */
@@ -38,51 +37,95 @@
   }
   
   .filter-button:hover {
-    background-color: #45a049; /* Darker green on hover */
+    background-color: #581a55; /* Darker green on hover */
   }
   
   .filter-button:active {
-    background-color: #3e8e41; /* Dark green when pressed */
+    background-color: #8e3e89; /* Dark green when pressed */
   }  
   
   .pricing-recommendations {
     margin-top: 20px;
   }
 
-  .popup-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .category-popup {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-  }
-  
-  .category-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
   .category-buttons button {
-    padding: 10px 20px;
-    background-color: #ddd;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .category-buttons button:hover {
-    background-color: #ccc;
-  }
+  background-color: #faf8f9; /* Green */
+  border: none;
+  color: rgb(166, 74, 128);
+  padding: 10px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 10px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 8px;
+}
 
-  
+.create-dynamic-pricing-rule-button,
+.remove-all-dynamic-pricing-rules-button,
+.clear-button {
+  background-color: #fcfafc; /* Blue */
+  border: none;
+  color: rgb(182, 85, 161);
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 10px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content {
+ 
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-buttons button:hover {
+  background-color: #4682B4;
+  color: white;
+}
+
