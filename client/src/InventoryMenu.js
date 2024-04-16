@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './InventoryMenu.css'; // Import CSS file for styling
-
-
 function InventoryMenu() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
@@ -23,16 +21,6 @@ function InventoryMenu() {
   const [itemsInCategory, setItemsInCategory] = useState([]);
   
   const categories = [
-    /*'Grocery',
-    'Hot Foods',
-    'Ice Cream',
-    'Medicine',
-    'Sandwiches',
-    'Soda',
-    'Water',
-    'Snacks',
-    'Health',
-    'Household'*/
     'Snacks',
     'Ice Cream',
     'Chicken',
@@ -285,7 +273,6 @@ function InventoryMenu() {
     updatedHourRules.splice(index, 1);
     setHourRules(updatedHourRules);
   };
-
   const handleAddSeasonRule = () => {
     if (seasonRules.length < 4) {
       setSeasonRules([...seasonRules, { season: '', type: '+', percent: '' }]);
@@ -440,7 +427,6 @@ function InventoryMenu() {
                                     <option value="21">21:00</option>
                                     <option value="22">22:00</option>
                                     <option value="23">23:00</option>
-                                    <option value="24">24:00</option>
                                 </select>
                                 <label htmlFor={`type${index}`}>Type:</label>
                                 <select
@@ -451,41 +437,19 @@ function InventoryMenu() {
                                     <option value="+">+</option>
                                     <option value="-">-</option>
                                 </select>
-                                <label htmlFor={`percent${index}`}>Percent (%):</label>
+                                <label htmlFor={`percent${index}`}>Percent Change:</label>
                                 <input
                                     type="text"
                                     id={`percent${index}`}
                                     value={rule.percent}
                                     onChange={(e) => handleHourRuleChange(index, 'percent', e.target.value)}
                                 />
-                                <button onClick={(e) => { e.stopPropagation(); handleRemoveHourRule(index); }}>Remove Rule</button>
+                                <button onClick={() => handleRemoveHourRule(index)}>Remove</button>
                             </div>
                         ))}
-                        {hourRules.length <= 24 && (
-                            <button onClick={handleAddHourRule}>Add Hour Rule</button>
-                        )}
+                        <button onClick={handleAddHourRule}>Add Hour Rule</button>
+                        {!validHourRules && <p>Please fill out all hour rules correctly.</p>}
                     </div>
-                </div>
-            )}
-            {ruleType === 'Seasonality' && (
-              <div>
-                <div>
-                  <label htmlFor="priceMaximum">Price Maximum ($):</label>
-                  <input
-                    type="text"
-                    id="priceMaximum"
-                    value={priceMaximum}
-                    onChange={(e) => setPriceMaximum(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="priceMinimum">Price Minimum ($):</label>
-                  <input
-                    type="text"
-                    id="priceMinimum"
-                    value={priceMinimum}
-                    onChange={(e) => setPriceMinimum(e.target.value)}
-                  />
                 </div>
                 <div>
                   <label htmlFor="duration">Duration (years):</label>
@@ -522,20 +486,13 @@ function InventoryMenu() {
                 </div>
               </div>
             )}
-            {ruleType && (
-              <div>
-                <button onClick={handleSaveEdit}>Save Edit</button>
+            <div className="modal-buttons">
                 <button onClick={handleCloseModal}>Cancel</button>
-              </div>
-            )}
+                <button onClick={handleSaveEdit}>Save</button>
+            </div>
           </div>
         </div>
       )}
-      <div className="pricing-recommendations">
-        {/* Placeholder for pricing recommendations */}
-        <h3>Pricing Recommendations</h3>
-        <p>Algo generated reccomendations go here</p>
-      </div>
     </div>
   );
 }
