@@ -4,7 +4,6 @@
   transform: translateX(calc(100% - 300px)); /* Adjust the value as needed */
   width: 300px;
   height: 100vh;
-  background-color: #f0f0f0;
   padding: 20px;
 }
   
@@ -23,45 +22,28 @@
   }
   
   .filter-button {
-    margin-top: 20px;
+    background-color: #a8438a; /* Pink background */
+    border: none;
+    color: white; /* White text */
+    padding: 10px 20px; /* Padding */
+    text-align: center; /* Center text horizontally */
+    text-decoration: none; /* Remove underline */
+    display: inline-block;
+    font-size: 16px; /* Font size */
+    margin: 4px 2px; /* Margin */
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-radius: 8px; /* Rounded corners */
   }
+  
+  .filter-button:hover {
+    background-color: #a04580; /* Darker Pink on hover */
+  }
+  
+  .filter-button:active {
+    background-color: #974084; /* Dark Pink when pressed */
+  }  
   
   .pricing-recommendations {
     margin-top: 20px;
-  }
-
-  .popup-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .category-popup {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-  }
-  
-  .category-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-  .category-buttons button {
-    padding: 10px 20px;
-    background-color: #ddd;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .category-buttons button:hover {
-    background-color: #ccc;
   }
