@@ -4,7 +4,7 @@
   transform: translateX(calc(100% - 300px)); /* Adjust the value as needed */
   width: 300px;
   height: 100vh;
-  background-color: #f0f0f0;
+  background-color: #ffffff;
   padding: 20px;
 }
   
@@ -23,8 +23,27 @@
   }
   
   .filter-button {
-    margin-top: 20px;
+    background-color: #4CAF50; /* Green background */
+    border: none;
+    color: white; /* White text */
+    padding: 10px 20px; /* Padding */
+    text-align: center; /* Center text horizontally */
+    text-decoration: none; /* Remove underline */
+    display: inline-block;
+    font-size: 16px; /* Font size */
+    margin: 4px 2px; /* Margin */
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-radius: 8px; /* Rounded corners */
   }
+  
+  .filter-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
+  
+  .filter-button:active {
+    background-color: #3e8e41; /* Dark green when pressed */
+  }  
   
   .pricing-recommendations {
     margin-top: 20px;
@@ -65,3 +84,5 @@
   .category-buttons button:hover {
     background-color: #ccc;
   }
+
+  
