@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './InventoryMenu.css'; // Import CSS file for styling
 
 function InventoryMenu() {
   const [selectedCategory, setSelectedCategory] = useState(null);
