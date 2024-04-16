@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './InventoryMenu.css'; // Import CSS file for styling
-
 function InventoryMenu() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
@@ -274,7 +273,6 @@ function InventoryMenu() {
     updatedHourRules.splice(index, 1);
     setHourRules(updatedHourRules);
   };
-
   const handleAddSeasonRule = () => {
     if (seasonRules.length < 4) {
       setSeasonRules([...seasonRules, { season: '', type: '+', percent: '' }]);
@@ -453,86 +451,40 @@ function InventoryMenu() {
                         {!validHourRules && <p>Please fill out all hour rules correctly.</p>}
                     </div>
                 </div>
-            )}
-            {ruleType === 'Seasonality' && (
                 <div>
-                    <div>
-                        <label htmlFor="priceMaximum">Price Maximum ($):</label>
-                        <input
-                            type="text"
-                            id="priceMaximum"
-                            value={priceMaximum}
-                            onChange={(e) => setPriceMaximum(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="priceMinimum">Price Minimum ($):</label>
-                        <input
-                            type="text"
-                            id="priceMinimum"
-                            value={priceMinimum}
-                            onChange={(e) => setPriceMinimum(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="duration">Duration (days):</label>
-                        <input
-                            type="text"
-                            id="duration"
-                            value={duration}
-                            onChange={(e) => setDuration(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                      <label htmlFor="timezone">Time Zone:</label>
-                      <select
-                        id="timezone"
-                        value={timezone}
-                        onChange={(e) => setTimezone(e.target.value)}
-                      >
-                        <option value="EST">EST</option>
-                        <option value="PST">PST</option>
-                      </select>
-                    </div>
-                    <div>
-                        <h4>Season Rules</h4>
-                        {seasonRules.map((rule, index) => (
-                            <div key={index}>
-                                <label htmlFor={`season${index}`}>Season:</label>
-                                <select
-                                    id={`season${index}`}
-                                    value={rule.season}
-                                    onChange={(e) => handleSeasonRuleChange(index, 'season', e.target.value)}
-                                >
-                                    <option value="">Select Season</option>
-                                    <option value="Summer">Summer</option>
-                                    <option value="Fall">Fall</option>
-                                    <option value="Winter">Winter</option>
-                                    <option value="Spring">Spring</option>
-                                </select>
-                                <label htmlFor={`type${index}`}>Type:</label>
-                                <select
-                                    id={`type${index}`}
-                                    value={rule.type}
-                                    onChange={(e) => handleSeasonRuleChange(index, 'type', e.target.value)}
-                                >
-                                    <option value="+">+</option>
-                                    <option value="-">-</option>
-                                </select>
-                                <label htmlFor={`percent${index}`}>Percent Change:</label>
-                                <input
-                                    type="text"
-                                    id={`percent${index}`}
-                                    value={rule.percent}
-                                    onChange={(e) => handleSeasonRuleChange(index, 'percent', e.target.value)}
-                                />
-                                <button onClick={() => handleRemoveSeasonRule(index)}>Remove</button>
-                            </div>
-                        ))}
-                        <button onClick={handleAddSeasonRule}>Add Season Rule</button>
-                        {!validSeasonRules && <p>Please fill out all season rules correctly.</p>}
-                    </div>
+                  <label htmlFor="duration">Duration (years):</label>
+                  <input
+                    type="text"
+                    id="duration"
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
+                  />
                 </div>
+                <div>
+                  <h4>Season Rules</h4>
+                  {seasonRules.map((rule, index) => (
+                    <div key={index}>
+                      <p>{rule.season}</p> {/* Static text for season */}
+                      <label htmlFor={`type${index}`}>Type:</label>
+                      <select
+                        id={`type${index}`}
+                        value={rule.type}
+                        onChange={(e) => handleSeasonRuleChange(index, 'type', e.target.value)}
+                      >
+                        <option value="+">+</option>
+                        <option value="-">-</option>
+                      </select>
+                      <label htmlFor={`percent${index}`}>Percent (%):</label>
+                      <input
+                        type="text"
+                        id={`percent${index}`}
+                        value={rule.percent}
+                        onChange={(e) => handleSeasonRuleChange(index, 'percent', e.target.value)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
             <div className="modal-buttons">
                 <button onClick={handleCloseModal}>Cancel</button>
