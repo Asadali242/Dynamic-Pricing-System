@@ -1,8 +1,11 @@
 # Dynamic-Pricing-System
-
-npm init -y in server and client folders to initialize
-type database passwd into server/index.js
-type node index.js to connect to database
-type node server.js to activate server
-
-ctrl + c to end
+## Steps to install and run the project:
+- Download the zip folder onto your local machine and unzip it
+- Open the Terminal and set the path to the Dynamic-Pricing-System Folder
+- Move to the 'server' directory and Install the neccessary Packages
+- Type 'python app.py' to initialize the python file
+- Now change the directory to 'client'
+- Type 'npm install'
+- Now type 'npm start'
+  
+At any point, press ctrl + c to terminate the process.
