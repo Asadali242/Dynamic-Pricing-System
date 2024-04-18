@@ -37,8 +37,8 @@ def insert_sample_data(sample_data):
 
 def generate_orderitem_sample_data(store_item_id, store_item_price):
     # Define start and end dates for the past 30 days
-    end_date = datetime(2024, 4, 12)  # Today's date
-    start_date = end_date - timedelta(days=29)
+    end_date = datetime(2024, 5, 20)  # Today's date
+    start_date = end_date - timedelta(days=70)
 
     # Initialize a list to store the sample data
     sample_data = []
@@ -85,8 +85,39 @@ def generate_orderitem_sample_data(store_item_id, store_item_price):
 '''
 class generateSampleData(unittest.TestCase):
     def test_insert_orderitem_sample_data(self):
+        #populate data up to may 20 and 70 days prior for testing
+        #sample data is for each 5 items within the 5 sample categories
         insert_sample_data(generate_orderitem_sample_data('10000000-0000-0000-0000-000000000000', 249))
+        insert_sample_data(generate_orderitem_sample_data('20000000-0000-0000-0000-000000000000', 249))
+        insert_sample_data(generate_orderitem_sample_data('30000000-0000-0000-0000-000000000000', 149))
+        insert_sample_data(generate_orderitem_sample_data('40000000-0000-0000-0000-000000000000', 299))
+        insert_sample_data(generate_orderitem_sample_data('50000000-0000-0000-0000-000000000000', 519))
+
+        insert_sample_data(generate_orderitem_sample_data('60000000-0000-0000-0000-000000000000', 299))
+        insert_sample_data(generate_orderitem_sample_data('70000000-0000-0000-0000-000000000000', 219))
+        insert_sample_data(generate_orderitem_sample_data('80000000-0000-0000-0000-000000000000', 199))
+        insert_sample_data(generate_orderitem_sample_data('90000000-0000-0000-0000-000000000000', 189))
+        insert_sample_data(generate_orderitem_sample_data('11000000-0000-0000-0000-000000000000', 149))
+
+        insert_sample_data(generate_orderitem_sample_data('12000000-0000-0000-0000-000000000000', 699))
+        insert_sample_data(generate_orderitem_sample_data('13000000-0000-0000-0000-000000000000', 699))
+        insert_sample_data(generate_orderitem_sample_data('14000000-0000-0000-0000-000000000000', 699))
+        insert_sample_data(generate_orderitem_sample_data('15000000-0000-0000-0000-000000000000', 899))
+        insert_sample_data(generate_orderitem_sample_data('16000000-0000-0000-0000-000000000000', 599))
+
+        insert_sample_data(generate_orderitem_sample_data('17000000-0000-0000-0000-000000000000', 169))
+        insert_sample_data(generate_orderitem_sample_data('18000000-0000-0000-0000-000000000000', 179))
+        insert_sample_data(generate_orderitem_sample_data('19000000-0000-0000-0000-000000000000', 309))
+        insert_sample_data(generate_orderitem_sample_data('21000000-0000-0000-0000-000000000000', 304))
+        insert_sample_data(generate_orderitem_sample_data('22000000-0000-0000-0000-000000000000', 384))
+
+        insert_sample_data(generate_orderitem_sample_data('23000000-0000-0000-0000-000000000000', 850))
+        insert_sample_data(generate_orderitem_sample_data('24000000-0000-0000-0000-000000000000', 950))
+        insert_sample_data(generate_orderitem_sample_data('25000000-0000-0000-0000-000000000000', 999))
+        insert_sample_data(generate_orderitem_sample_data('26000000-0000-0000-0000-000000000000', 229))
+        insert_sample_data(generate_orderitem_sample_data('27000000-0000-0000-0000-000000000000', 119))
 '''
+
 
 class TestDatabaseFunctions(unittest.TestCase):
     def test_fetch_data_for_time_rule_recommendations(self):

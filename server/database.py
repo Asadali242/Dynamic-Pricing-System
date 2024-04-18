@@ -395,7 +395,6 @@ def fetchDataForTimeRuleRecommendations():
 
         cur.execute(query, (today.hour, today.hour, start_date, today - timedelta(days=1)))
         data = cur.fetchall()
-        #print("Fetched data:", data)
 
         # Construct the result dictionary
         result = {}
@@ -419,8 +418,7 @@ def fetchDataForTimeRuleRecommendations():
                 months_average_price_this_hour = "N/A"
             if months_overall_average_price_any_given_hour is None:
                 months_overall_average_price_any_given_hour = "N/A"
-
-
+                
             # Create a dictionary with descriptive variable names
             item_data = {
                 "name": item_name,
