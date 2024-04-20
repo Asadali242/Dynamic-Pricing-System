@@ -18,13 +18,10 @@ class TimeRuleUpdater(Database):
         try:
             # Logic for setting timer based on duration and ending the rule upon time elapsing
             rule_data_json = json.loads(rule_data)
-            #duration_in_days = int(rule_data_json.get('durationInDays', 0))
-            #print("Duration in days:", duration_in_days)
-            duration_in_days = rule_data_json.get('durationInDays')
+            duration_in_days = int(rule_data_json.get('durationInDays', 0))
+            print("Duration in days:", duration_in_days)
             
             if duration_in_days is not None:
-                duration_in_days = int(duration_in_days)
-                print("Duration in days:", duration_in_days)
                 # If a timer already exists for these items, overwrite it
                 if category in category_timers_time:
                     category_timers_time[category].remove()
