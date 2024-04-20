@@ -92,7 +92,6 @@ class generateSampleData(unittest.TestCase):
         insert_sample_data(generate_orderitem_sample_data('30000000-0000-0000-0000-000000000000', 149))
         insert_sample_data(generate_orderitem_sample_data('40000000-0000-0000-0000-000000000000', 299))
         insert_sample_data(generate_orderitem_sample_data('50000000-0000-0000-0000-000000000000', 519))
-
         insert_sample_data(generate_orderitem_sample_data('60000000-0000-0000-0000-000000000000', 299))
         insert_sample_data(generate_orderitem_sample_data('70000000-0000-0000-0000-000000000000', 219))
         insert_sample_data(generate_orderitem_sample_data('80000000-0000-0000-0000-000000000000', 199))

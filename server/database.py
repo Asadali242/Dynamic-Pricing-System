@@ -382,7 +382,7 @@ def fetchDataForTimeRuleRecommendations():
                 si.price AS current_price,
                 AVG(CASE WHEN EXTRACT(HOUR FROM oi.createdate) = %s THEN oi.quantity ELSE 0 END) AS months_average_units_this_hour,
                 AVG(oi.quantity) AS months_overall_average_units_at_any_given_hour,
-                AVG(CASE WHEN EXTRACT(HOUR FROM oi.createdate) = %s THEN si.price ELSE 0 END) AS months_average_price_this_hour,
+                AVG(CASE WHEN EXTRACT(HOUR FROM oi.createdate) = %s THEN si.price ELSE NULL END) AS months_average_price_this_hour,
                 AVG(si.price) AS months_overall_average_price
             FROM storeitems si
             JOIN storeitemcategories sic ON si.id = sic.store_item_id
@@ -392,7 +392,6 @@ def fetchDataForTimeRuleRecommendations():
                 AND oi.createdate BETWEEN %s AND %s
             GROUP BY c.name, si.name, si.price;
         """
-
         cur.execute(query, (today.hour, today.hour, start_date, today - timedelta(days=1)))
         data = cur.fetchall()
 
