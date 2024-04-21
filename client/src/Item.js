@@ -9,8 +9,8 @@ const Item = ({ item, index }) => (
         {item[1] === "Ben & Jerry's Americone Dream" && (
           <img src="https://shop.benjerry.com/cdn/shop/products/36796_US_IC_Americone-Dream_473ml_FOP-1000x1000-e30c47ce-d108-45d9-a0da-fbb10bb410c1.png?v=1677670266" alt="Ben & Jerry's Americone Dream" />
         )}
-        {item[1] === "Ben & Jerry's Everthing But The." && (
-          <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjJ10dciEofxqSgefx-0S_YR0FNpb1gU4oSuim5IhUTA4Ts-Rhbskbpxcxdw4xGW3oKxgE_ATgxqY4DuWUyxpDAnN84DDGS3WtRx2ZSU8lxrIeE_PeVzaf_VjZHpYmFYyAqam__pkuOOaI/s1600/ben+n+jerrys+2015+everything+but+the+ice+cream+pint.jpg" />
+        {item[1] === "Ben & Jerry's Everthing But The..." && (
+          <img src="https://i5.walmartimages.com/seo/Ben-Jerry-s-Everything-But-The-Chocolate-and-Vanilla-Ice-Cream-16-oz_eea39013-9dbc-4f2f-9709-b101fa8cc296.9e2adfd57638c6888e33ad1b5f7ac3a3.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF" />
         )}
         {item[1] === "Ben & Jerry's Phish Food" && (
           <img src="https://images.heb.com/is/image/HEBGrocery/000403020-1" alt="Ben & Jerry's Phish Food" />
@@ -66,8 +66,8 @@ const Item = ({ item, index }) => (
         {item[1] === "Trident Spearmint Gum" && (
           <img src="https://m.media-amazon.com/images/I/81+HlAtInPL.jpg" alt="Trident Spearmint Gum" />
         )}
-        {item[1] === "TWIX CARAMEL KING SIZe" && (
-          <img src="https://media.chevronextramile.com/uploads/2021/04/26095229/Twix-Caramel-Share.jpg" alt="TWIX CARAMEL KING SIZe" />
+        {item[1] === "TWIX CARAMEL KING SIZE" && (
+          <img src="https://media.chevronextramile.com/uploads/2021/04/26095229/Twix-Caramel-Share.jpg" alt="TWIX CARAMEL KING SIZE" />
         )}
         {item[1] === "Twizzlers Nibs Cherry Licorice Candy Bits" && (
           <img src="https://target.scene7.com/is/image/Target/GUEST_042c7233-931f-4234-bda1-2680cb326513?wid=488&hei=488&fmt=pjpeg" alt="Twizzlers Nibs Cherry Licorice Candy Bits" />

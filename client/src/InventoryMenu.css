@@ -1,11 +1,9 @@
 .inventory-menu {
-  position: fixed;
-  top: 0;
-  transform: translateX(calc(100% - 300px)); /* Adjust the value as needed */
-  width: 300px;
-  height: 100vh;
-  padding: 20px;
+  width: 90%; /* Adjust the width as needed */
+  margin: 0 auto; /* Center the component horizontally */
+  padding: 20px; /* Add padding for spacing */
 }
+
   
   .close-button {
     position: absolute;
@@ -24,7 +22,7 @@
   }  
   
   .filter-button {
-    background-color: #c93e8d; /* Green background */
+    background-color: #FF00FF; /* Green background */
     border: none;
     color: white; /* White text */
     padding: 10px 20px; /* Padding */
@@ -39,7 +37,7 @@
   }
   
   .filter-button:hover {
-    background-color: #581a55; /* Darker green on hover */
+    background-color: #FF00FF; /* Darker green on hover */
   }
   
   .filter-button:active {
@@ -53,7 +51,7 @@
   .category-buttons button {
   background-color: #faf8f9; /* Green */
   border: none;
-  color: rgb(166, 74, 128);
+  color: #FF00FF;
   padding: 10px 10px;
   text-align: center;
   text-decoration: none;
@@ -67,14 +65,14 @@
 .create-dynamic-pricing-rule-button,
 .remove-all-dynamic-pricing-rules-button,
 .clear-button {
-  background-color: #fcfafc; /* Blue */
+  background-color: rgb(245, 241, 241); 
   border: none;
-  color: rgb(182, 85, 161);
+  color: #FF00FF;
   padding: 10px 20px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 10px;
+  font-size: 15px;
   margin: 4px 2px;
   cursor: pointer;
   border-radius: 8px;
@@ -82,8 +80,8 @@
 
 .modal {
   position: fixed;
-  top: 30%;
-  left: 30%;
+  top: 25%;
+  left: 70%;
   transform: translate(-30%, -30%);
   background-color: white;
   border-radius: 8px;
@@ -132,7 +130,21 @@ select {
   color: white;
 }
 .item-image img {
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
 } 
+
+.item-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.item-image {
+  margin-right: 20px;
+}
+
+.item-info {
+  flex: 1;
+}
 

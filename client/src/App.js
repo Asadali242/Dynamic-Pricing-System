@@ -19,7 +19,12 @@ function App() {
   return (
     <div className="container">
       <div className="sidebar">
-        <h1>Lula Dynamic Pricing Development Testing</h1>
+        <h1>Lula Dynamic Pricing System</h1>
+        <img 
+          src="https://static.wixstatic.com/media/70b423_a809613c0ee940fa9a34ac75e3746c42~mv2.png/v1/fit/w_2500,h_1330,al_c/70b423_a809613c0ee940fa9a34ac75e3746c42~mv2.png" 
+          alt="Lulu Logo" 
+          className="lulu-logo" // Apply the CSS class
+        />
         <div className="button-container">
           <InventoryButton onClick={openInventoryMenu} />
           <DynamicPricingButton onClick={openDynamicPricingMenu} />
