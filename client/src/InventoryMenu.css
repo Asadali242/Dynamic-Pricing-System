@@ -80,17 +80,18 @@
 
 .modal {
   position: fixed;
-  top: 25%;
-  left: 70%;
-  transform: translate(-30%, -30%);
-  background-color: white;
+  top: 50%; /* Position the modal at the center of the viewport vertically */
+  left: 57%; /* Position the modal at the center of the viewport horizontally */
+  transform: translate(-50%, -50%); /* Center the modal precisely */
+  background-color: #fdf7de;
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 700px; /* Adjust the width of the modal as needed */
 }
 
 .modal-content {
-  max-height: 70vh; /* Adjust the maximum height as needed */
+  max-height: 80vh; /* Adjust the maximum height as needed */
   overflow-y: auto; /* Enable vertical scrolling */
 }
 
