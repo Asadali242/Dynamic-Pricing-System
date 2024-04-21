@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './InventoryMenu.css'; // Import CSS file for styling
+import Item from './Item';
 
 function InventoryMenu() {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -326,10 +327,11 @@ function InventoryMenu() {
       <h2>Inventory</h2>
       {selectedCategory && <p>Filtering by: {selectedCategory}</p>}
       <div className="item-list">
-        {itemsInCategory.map((item, index) => (
-          <li key={index}>{item[1]} - ${`${item[2].slice(0, 1)}.${item[2].slice(1)}`}</li>
+      {itemsInCategory.map((item, index) => (
+          <Item key={index} item={item} />
         ))}
       </div>
+
       <div className="filter-container">
         <button className="filter-button" onClick={() => setShowPopup(true)}>Filter</button>
         {showPopup && (
