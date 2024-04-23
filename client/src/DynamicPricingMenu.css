@@ -82,3 +82,25 @@ body {
   border-radius: 5px;
   font-weight: bold;
 }
+
+.pricing-recommendations {
+  margin-top: 20px;
+}
+
+.category-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Change auto-fill to auto-fit */
+  grid-gap: 20px;
+}
+
+
+.category-box {
+  background-color: #f7f3e5;
+  border: 1px solid black;
+  padding: 20px;
+}
+
+.recommendation {
+  margin-top: 10px;
+}
+

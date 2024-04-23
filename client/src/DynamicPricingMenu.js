@@ -116,10 +116,9 @@ function DynamicPricingMenu() {
           )}
           {selectedCategory && <button className="clear-button" onClick={clearCategory}>Clear</button>}
         </div>
-
         <h3>High-Priority Price Suggestions for Unenrolled Products</h3>
         {Object.keys(pricingRecommendations).map(category => (
-          <div key={category}>
+          <div key={category} className="category-box">
             <h4>{category}</h4>
             {pricingRecommendations[category].map((recommendation, index) => (
               <div key={index} className="recommendation">
