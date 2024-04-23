@@ -1,14 +1,59 @@
-import React, { useState } from 'react'; // Import useState hook from React library
+import React, { useState, useEffect } from 'react'; // Import useState hook from React library
 import './DynamicPricingMenu.css'; // Import CSS file for styling
+import socketIOClient from 'socket.io-client';
 
 function DynamicPricingMenu() {
   // State to manage visibility of enrolled products popup
   const [showEnrolledProducts, setShowEnrolledProducts] = useState(false);
+  const [pricingRecommendations, setPricingRecommendations] = useState([]);
 
   // Function to toggle visibility of enrolled products popup
   const toggleEnrolledProducts = () => {
     setShowEnrolledProducts(!showEnrolledProducts);
   };
+
+
+
+
+  // Function to fetch recommendations from the server
+  const fetchRecommendations = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/get_recommendations');
+      const data = await response.json();
+      setPricingRecommendations(data);
+    } catch (error) {
+      console.error('Error fetching recommendations:', error);
+    }
+  };
+
+  // Function to update recommendations when new data is emitted via Socket.IO
+  const handleSocketEvent = (suggestions) => {
+    setPricingRecommendations(suggestions);
+  };
+
+  useEffect(() => {
+    // Fetch recommendations when the component mounts
+    fetchRecommendations();
+
+    // Set up Socket.IO connection
+    const socket = socketIOClient('http://localhost:5000');
+
+    // Listen for 'hourly_suggestions' event
+    socket.on('hourly_suggestion_updater', handleSocketEvent);
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  const handleAccept = (recommendation) => {
+    // Logic to handle accepting recommendation
+  };
+
+  const handleDeny = (recommendation) => {
+    // Logic to handle denying recommendation
+  };
+
 
   return (
     <div>
@@ -57,6 +102,22 @@ function DynamicPricingMenu() {
           </div>
         </div>
       )}
+
+      <div className="pricing-recommendations">
+        {/* Placeholder for pricing recommendations */}
+        <h3>High-Priority Price suggestions for unenrolled products</h3>
+        {Object.keys(pricingRecommendations).map(category => (
+        <div key={category}>
+          <h4>{category}</h4>
+          {pricingRecommendations[category].map((recommendation, index) => (
+              <div key={index} className="recommendation">
+              <p>Name: {recommendation.name} | Action: {recommendation.action} | Current Price: {(recommendation.current_price / 100).toFixed(2)} | Suggested Price: {(recommendation.suggested_price / 100).toFixed(2)} <button onClick={() => handleAccept(recommendation)}>Accept</button> <button onClick={() => handleDeny(recommendation)}>Deny</button> </p>
+          </div>
+          ))}
+        </div>
+      ))}
+        </div>
+
     </div>
   );
 }

@@ -2,6 +2,7 @@ import unittest
 from database.database import Database
 from database.hybrid_time_suggestion import HybridTimeSuggestion
 
+
 class HybridTimeSuggestionTest(unittest.TestCase):
     def setUp(self):
         DB_HOST = "lula-dynamicpricing-testdb.ca3vbbjlumqp.us-east-1.rds.amazonaws.com"
@@ -11,6 +12,7 @@ class HybridTimeSuggestionTest(unittest.TestCase):
         DB_NAME = "postgres"
         self.db = Database(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
         self.hybrid_time_suggestion = HybridTimeSuggestion(self.db)
+
 
     def test_fetch_dynamic_pricing_data(self):
         print("Testing fetch_dynamic_pricing_data...")
@@ -29,7 +31,8 @@ class HybridTimeSuggestionTest(unittest.TestCase):
         for category, items in suggestions.items():
             print(f"Category: {category}")
             for item in items:
-                print(f"Item: {item['name']}, Action: {item['action']}, Suggested Price: {item['suggested_price']}")
+                print(f"Item: {item['name']}, Action: {item['action']}, Current Price: {item['current_price']}, Suggested Price: {item['suggested_price']}")
+
 
 if __name__ == "__main__":
     unittest.main()
