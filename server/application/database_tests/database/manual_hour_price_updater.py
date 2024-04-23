@@ -11,7 +11,7 @@ class ManualHourPriceUpdater(Database):
 
     def manualHourlyPriceUpdate(self):
         helper = DatabaseHelpers(self.db)
-        price_history_updater = PriceHistoryUpdater(self)
+        price_history_updater = PriceHistoryUpdater(self.db)
         relevant_store_items = helper.fetchActiveManualHourRuleStoreItems()
         for item_id, manual_time_rule in relevant_store_items:
             hourly_price_changes = manual_time_rule.get('hourlyPriceChanges', [])
