@@ -1,16 +1,15 @@
 from flask import Blueprint, jsonify
 import datetime
 from decimal import Decimal
-from services import hybrid_hour_suggester, sales_history_getter
+from services import hybrid_hour_suggester
 
 
 suggestion_blueprint = Blueprint('suggestion_blueprint', __name__)
 
 @suggestion_blueprint.route('/get_recommendations')
 def get_recommendations():
-    data = sales_history_getter.fetchDataForTimeRuleRecommendations()
     current_time = datetime.datetime.now().hour
-    suggestions = hybrid_hour_suggester.suggest_price_change(data, current_time)
+    suggestions = hybrid_hour_suggester.suggest_price_change(current_time)
     converted_suggestions = convert_decimals_to_float(suggestions)
     return jsonify(converted_suggestions)
 

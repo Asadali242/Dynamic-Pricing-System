@@ -6,15 +6,10 @@ class HybridTimeSuggestion(Database):
     def __init__(self, db):
         self.db = db
         
-    def fetch_dynamic_pricing_data(self):
-        try:
-            sales_history_getter = SalesHistoryGetter(self.db)
-            return sales_history_getter.fetchDataForTimeRuleRecommendations()
-        except Exception as e:
-            print(f"Failed to fetch data: {e}")
-            return None  # Return None or an empty dictionary {}
 
-    def suggest_price_change(self, data, user_hour):
+    def suggest_price_change(self, user_hour):
+        sales_history_getter = SalesHistoryGetter(self.db)
+        data = sales_history_getter.fetchDataForTimeRuleRecommendations()
         if not data:
             print("No data available to suggest price changes.")
             return {}

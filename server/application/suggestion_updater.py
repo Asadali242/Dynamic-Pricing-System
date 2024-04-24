@@ -1,13 +1,11 @@
 import datetime
 from services import hybrid_hour_suggester
-from services import sales_history_getter
 from flask_socketio import emit
 from decimal import Decimal
 
 def hourly_suggestion_updater(socketio):
-    data = sales_history_getter.fetchDataForTimeRuleRecommendations()
     current_time = datetime.datetime.now().hour
-    suggestions = hybrid_hour_suggester.suggest_price_change(data, current_time) 
+    suggestions = hybrid_hour_suggester.suggest_price_change(current_time) 
     #print("suggestions:", suggestions)
     converted_suggestions = convert_decimals_to_float(suggestions)
     

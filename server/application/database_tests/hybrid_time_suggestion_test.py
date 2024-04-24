@@ -14,17 +14,10 @@ class HybridTimeSuggestionTest(unittest.TestCase):
         self.hybrid_time_suggestion = HybridTimeSuggestion(self.db)
 
 
-    def test_fetch_dynamic_pricing_data(self):
-        print("Testing fetch_dynamic_pricing_data...")
-        data = self.hybrid_time_suggestion.fetch_dynamic_pricing_data()
-        self.assertIsNotNone(data, "No data was fetched.")
-        print("Data fetched successfully.")
-
     def test_suggest_price_change(self):
         print("Testing suggest_price_change...")
-        data = self.hybrid_time_suggestion.fetch_dynamic_pricing_data()
         # Assuming user_time for test purposes is set statically, e.g., 12
-        suggestions = self.hybrid_time_suggestion.suggest_price_change(data, 12)
+        suggestions = self.hybrid_time_suggestion.suggest_price_change(12)
         self.assertIsInstance(suggestions, dict, "Suggestions should be a dictionary.")
         print("Suggestions made successfully.")
         print("Suggestions Output:")
