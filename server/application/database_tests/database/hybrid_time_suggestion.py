@@ -45,6 +45,7 @@ class HybridTimeSuggestion(Database):
 
                 category_recommendations.append({
                     'name': item_name,
+                    'type': "hourly",
                     'action': action,
                     'current_price': current_price,
                     'suggested_price': round(suggested_price, 2)

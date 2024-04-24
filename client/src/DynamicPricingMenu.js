@@ -122,7 +122,7 @@ function DynamicPricingMenu() {
             <h4>{category}</h4>
             {pricingRecommendations[category].map((recommendation, index) => (
               <div key={index} className="recommendation">
-                <p>Name: {recommendation.name} | Action: {recommendation.action} | Current Price: {(recommendation.current_price / 100).toFixed(2)} | Suggested Price: {(recommendation.suggested_price / 100).toFixed(2)} <button onClick={() => handleAccept(recommendation)}>Accept</button> <button onClick={() => handleDeny(recommendation)}>Deny</button> </p>
+                <p>Name: {recommendation.name} | Type: {recommendation.type} | Action: {recommendation.action} | Current Price: {(recommendation.current_price / 100).toFixed(2)} | Suggested Price: {(recommendation.suggested_price / 100).toFixed(2)} <button onClick={() => handleAccept(recommendation)}>Accept</button> <button onClick={() => handleDeny(recommendation)}>Deny</button> </p>
               </div>
             ))}
           </div>
