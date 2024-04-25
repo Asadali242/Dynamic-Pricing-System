@@ -26,6 +26,5 @@ class HybridTimeSuggestionTest(unittest.TestCase):
             for item in items:
                 print(f"Item: {item['name']}, Category: {item['category']}, Type: {item['type']}, Action: {item['action']}, Current Price: {item['current_price']}, Suggested Price: {item['suggested_price']}")
 
-
 if __name__ == "__main__":
     unittest.main()

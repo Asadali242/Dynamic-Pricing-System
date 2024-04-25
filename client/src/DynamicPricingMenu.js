@@ -5,12 +5,9 @@ import socketIOClient from 'socket.io-client';
 function DynamicPricingMenu() {
   const [showEnrolledProducts, setShowEnrolledProducts] = useState(false);
   const [pricingRecommendations, setPricingRecommendations] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [showPopup, setShowPopup] = useState(false);
   const [acceptedRecommendations, setAcceptedRecommendations] = useState([]);
   const [deniedRecommendations, setDeniedRecommendations] = useState([]);
 
-  const categories = ['Snacks', 'Ice Cream', 'Chicken', 'Candy', 'Beverages'];
 
   const fetchRecommendations = async () => {
     try {
@@ -30,7 +27,7 @@ function DynamicPricingMenu() {
     fetchRecommendations();
 
     const socket = socketIOClient('http://localhost:5000');
-    socket.on('hourly_suggestion_updater', handleSocketEvent);
+    socket.on('hourly_suggestion_emitter', handleSocketEvent);
 
     return () => {
       socket.disconnect();
@@ -38,34 +35,57 @@ function DynamicPricingMenu() {
   }, []);
 
   const handleAccept = (recommendation) => {
-    // Logic to handle accepting recommendation
-    setAcceptedRecommendations([...acceptedRecommendations, recommendation]);
-    // Remove the recommendation from denied list if it exists
-    setDeniedRecommendations(deniedRecommendations.filter(item => item !== recommendation));
+    fetch('http://localhost:5000/clear_recommendation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ recommendation }),
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to clear recommendation');
+      }
+      // Update accepted recommendations in state
+      setAcceptedRecommendations([...acceptedRecommendations, recommendation]);
+      // Remove the accepted recommendation from pricingRecommendations
+      setPricingRecommendations(prevState => {
+        const newState = {...prevState};
+        Object.keys(newState).forEach(category => {
+          newState[category] = newState[category].filter(item => item !== recommendation);
+        });
+        return newState;
+      });
+    })
+    .catch(error => {
+      console.error('Error clearing recommendation:', error);
+    });
   };
 
   const handleDeny = (recommendation) => {
-    // Logic to handle denying recommendation
-    setDeniedRecommendations([...deniedRecommendations, recommendation]);
-    // Remove the recommendation from accepted list if it exists
-    setAcceptedRecommendations(acceptedRecommendations.filter(item => item !== recommendation));
-  };
-
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    setShowPopup(false);
-  };
-
-  const renderCategoryButtons = () => {
-    return categories.map(category => (
-      <button key={category} onClick={() => handleCategoryChange(category)}>
-        {category}
-      </button>
-    ));
-  };
-
-  const clearCategory = () => {
-    setSelectedCategory(null);
+    fetch('http://localhost:5000/clear_recommendation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ recommendation }),
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to clear recommendation');
+      }
+      setAcceptedRecommendations([...acceptedRecommendations, recommendation]);
+      setPricingRecommendations(prevState => {
+        const newState = {...prevState};
+        Object.keys(newState).forEach(category => {
+          newState[category] = newState[category].filter(item => item !== recommendation);
+        });
+        return newState;
+      });
+    })
+    .catch(error => {
+      console.error('Error clearing recommendation:', error);
+    });
   };
 
   // Function to sort the recommendations based on the absolute difference between current price and suggested price

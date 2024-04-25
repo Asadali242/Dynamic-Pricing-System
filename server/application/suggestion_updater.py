@@ -3,12 +3,19 @@ from services import hybrid_hour_suggester
 from flask_socketio import emit
 from decimal import Decimal
 
-def hourly_suggestion_updater(socketio):
+#for initiating the suggestions if there is a fetch when the suggestions are empty
+#only updates the global variable
+def hourly_suggestion_updater(suggestions):
     current_time = datetime.datetime.now().hour
-    suggestions = hybrid_hour_suggester.suggest_price_change(current_time) 
-    #print("suggestions:", suggestions)
-    converted_suggestions = convert_decimals_to_float(suggestions)
-    
+    suggestions_data = hybrid_hour_suggester.suggest_price_change(current_time) 
+    suggestions.update(suggestions_data)  # Update the global suggestions variable
+
+#updates the global variable and emits to the client so it will update without needing to fetch
+def hourly_suggestion_emitter(socketio, suggestions):
+    current_time = datetime.datetime.now().hour
+    suggestions_data = hybrid_hour_suggester.suggest_price_change(current_time) 
+    suggestions.update(suggestions_data)  # Update the global suggestions variable
+    converted_suggestions = convert_decimals_to_float(suggestions_data)
     socketio.emit('hourly_suggestions', converted_suggestions)
     print("Updated suggestions for the hour")
 
