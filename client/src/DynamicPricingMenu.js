@@ -9,7 +9,21 @@ function DynamicPricingMenu() {
   const [pricingRecommendations, setPricingRecommendations] = useState([]);
   const [acceptedRecommendations, setAcceptedRecommendations] = useState([]);
   const [deniedRecommendations, setDeniedRecommendations] = useState([]);
+  const [totalUnitsSold, setTotalUnitsSold] = useState(null);
 
+  const fetchTotalUnitsSold = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/get_total_units_sold');
+      const data = await response.json();
+      setTotalUnitsSold(data);
+    } catch (error) {
+      setTotalUnitsSold('Error fetching data');
+    }
+  };
+
+  useEffect(() => {
+    fetchTotalUnitsSold(); 
+  }, []);
 
   const fetchRecommendations = async () => {
     try {
@@ -151,6 +165,7 @@ function DynamicPricingMenu() {
         <div className="dashboard-sections">
           <div className="dashboard-section">
             <h3>Products Sold</h3>
+            <p>{Number.isFinite(totalUnitsSold) ? totalUnitsSold : 'Loading...'}</p>
           </div>
           <div className="dashboard-section">
             <h3>Missed Sales</h3>

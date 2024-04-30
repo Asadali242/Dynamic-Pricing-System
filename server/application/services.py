@@ -8,6 +8,7 @@ from database_tests.database.manual_season_price_updater import ManualSeasonPric
 from database_tests.database.price_history_updater import PriceHistoryUpdater
 from database_tests.database.hybrid_time_suggestion import HybridTimeSuggestion
 from database_tests.database.hybrid_price_updater import HybridPriceUpdater
+from database_tests.database.total_units_sold_retriever import TotalUnitsSoldRetriever
 
 
 DB_HOST = "lula-dynamicpricing-testdb.ca3vbbjlumqp.us-east-1.rds.amazonaws.com"
@@ -25,3 +26,4 @@ sales_history_getter = SalesHistoryGetter(db)
 price_history_updater = PriceHistoryUpdater(db)
 hybrid_hour_suggester = HybridTimeSuggestion(db)
 hybrid_price_updater = HybridPriceUpdater(db)
+total_units_sold_retriever = TotalUnitsSoldRetriever(db)

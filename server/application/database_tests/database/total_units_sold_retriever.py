@@ -15,7 +15,8 @@ class TotalUnitsSoldRetriever(Database):
             query = "SELECT SUM(quantity) FROM orderitems"
             cur.execute(query)
             total_products_sold = cur.fetchone()[0]
-            print(f"Total products sold: {total_products_sold}")
+            print(total_products_sold)
+            return total_products_sold
         except psycopg2.Error as e:
             print("Error executing query:", e)
         finally:
