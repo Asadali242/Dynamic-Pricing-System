@@ -4,9 +4,11 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 from item_routes import item_blueprint
 from rule_routes import rule_blueprint
+from price_change_routes import suggestion_price_update_blueprint
 from scheduler import initialize_scheduler, register_jobs, register_shutdown
 from rule_based_price_updates import hourly_update, seasonal_update, new_minute_update
 from suggestion_updater import hourly_suggestion_updater, hourly_suggestion_emitter
+from services import hybrid_price_updater
 
 app = Flask(__name__)
 CORS(app)
@@ -14,6 +16,7 @@ socketio = SocketIO(app, cors_allowed_origins="http://localhost:3000")
 
 app.register_blueprint(item_blueprint)
 app.register_blueprint(rule_blueprint)
+app.register_blueprint(suggestion_price_update_blueprint)
 
 initialize_scheduler()
 suggestions = {} 
@@ -51,6 +54,7 @@ def clear_recommendation():
             return jsonify({'success': False, 'message': 'Category not found.'}), 404
     else:
         return jsonify({'success': False, 'message': 'No recommendation data received.'}), 400
+
 
 
 

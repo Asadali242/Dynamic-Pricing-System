@@ -116,3 +116,15 @@ class DatabaseHelpers(Database):
             print("Item price updated successfully.")
         except psycopg2.Error as e:
             print("Error updating item price:", e)
+
+    def fetchItemIdByName(self, item_name):
+        conn = self.db.connect()
+        cur = conn.cursor()
+        query = "SELECT id FROM storeitems WHERE name = %s;"
+        cur.execute(query, (item_name,))
+        result = cur.fetchone()
+        cur.close()
+        if result:
+            return result[0] 
+        else:
+            raise ValueError(f"No item found with the name '{item_name}'")

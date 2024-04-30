@@ -35,6 +35,8 @@ class DatabaseHelpersTest(unittest.TestCase):
         print("change price, red bull: ", self.helper.updateItemPriceInDatabase('22000000-0000-0000-0000-000000000000', 2.30))
         pass
 
+    def test_fetch_id_by_name(self):
+        print("ruffles id gotten by name:", self.helper.fetchItemIdByName("Ruffles Queso Cheese Potato Chips"))
 
 if __name__ == "__main__":
     unittest.main()

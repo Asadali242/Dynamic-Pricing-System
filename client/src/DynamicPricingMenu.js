@@ -62,6 +62,22 @@ function DynamicPricingMenu() {
     .catch(error => {
       console.error('Error clearing recommendation:', error);
     });
+
+    fetch('http://localhost:5000/suggestion_price_update', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ recommendation }), 
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to update price based on recommendation');
+      }
+    })
+    .catch(error => {
+      console.error('Error updating price based on recommendation:', error);
+    });
   };
 
   const handleDeny = (recommendation) => {
