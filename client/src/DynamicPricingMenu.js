@@ -128,9 +128,12 @@ function DynamicPricingMenu() {
       <p>Category: {recommendation.category}</p>
       <p>Type: {recommendation.type.toUpperCase()}</p>
       <p>Action: {recommendation.action}</p>
-      <p>Current Price: {(recommendation.current_price / 100).toFixed(2)}</p>
+      <p className={recommendation.Percentage.startsWith('-') ? 'price-decrease' : 'price-increase'}>
+        Percentage Change: {recommendation.Percentage}
+      </p>
+      <p>Current Price: ${(recommendation.current_price / 100).toFixed(2)}</p>
       <p className={recommendation.suggested_price > recommendation.current_price ? 'price-increase' : 'price-decrease'}>
-        Suggested Price: {(recommendation.suggested_price / 100).toFixed(2)}
+        Suggested Price: ${(recommendation.suggested_price / 100).toFixed(2)}
       </p>
       <button onClick={() => handleAccept(recommendation)} className="accept-button">Accept</button>
       <button onClick={() => handleDeny(recommendation)} className="deny-button">Deny</button>
