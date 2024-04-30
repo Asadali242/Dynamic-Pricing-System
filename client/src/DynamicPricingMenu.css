@@ -5,6 +5,7 @@ body {
 .dashboard {
   text-align: center;
   background-color: #f7f3e5;
+  border: 1px solid rgb(0, 0, 0);
   padding: 20px;
   margin-bottom: 20px;
 }
@@ -85,6 +86,7 @@ body {
 
 .pricing-recommendations {
   margin-top: 40px;
+  text-align: center;
 }
 
 .category-container {
@@ -99,6 +101,44 @@ body {
   border: 1px solid rgb(0, 0, 0);
   padding: 20px;
   width: 40%; /* Adjust the width as needed */
+  height: 740px;
+  margin: 0 auto; /* Center horizontally */
+  overflow-y: auto; /* Add vertical scrollbar */
 }
 
+.price-increase {
+  color: green;
+}
 
+.price-decrease {
+  color: red;
+}
+
+.category-title {
+  text-align: center; /* Center the text */
+}
+
+.recommendation {
+  text-align: left; /* Align other text left */
+}
+
+.accept-button {
+  background-color: rgb(143, 228, 143);
+  color: black;
+  border: none; /* Remove button border */
+  padding: 4px 8px; /* Add padding for better appearance */
+  cursor: pointer; /* Add pointer cursor on hover */
+  border-radius: 4px; /* Optional: Add rounded corners */
+  border: 1px solid rgb(0, 0, 0);
+  margin-right: 6px; /* Add margin to the right of the button */
+}
+
+.deny-button {
+  background-color: rgb(240, 139, 139);
+  color: black;
+  border: none; /* Remove button border */
+  padding: 4px 8px; /* Add padding for better appearance */
+  cursor: pointer; /* Add pointer cursor on hover */
+  border-radius: 4px; /* Optional: Add rounded corners */
+  border: 1px solid rgb(0, 0, 0);
+}

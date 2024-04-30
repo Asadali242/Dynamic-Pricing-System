@@ -106,19 +106,21 @@ function DynamicPricingMenu() {
 
     return (
       <div className="category-box">
-        {topRecommendations.map((recommendation, index) => (
-          <div key={index} className="recommendation">
-            <p>Name: {recommendation.name}</p>
-            <p>Category: {recommendation.category}</p>
-            <p>Type: {recommendation.type.toUpperCase()}</p>
-            <p>Action: {recommendation.action}</p>
-            <p>Current Price: {(recommendation.current_price / 100).toFixed(2)}</p>
-            <p>Suggested Price: {(recommendation.suggested_price / 100).toFixed(2)}</p>
-            <button onClick={() => handleAccept(recommendation)}>Accept</button>
-            <button onClick={() => handleDeny(recommendation)}>Deny</button>
-          </div>
-        ))}
-      </div>
+  {topRecommendations.map((recommendation, index) => (
+    <div key={index} className="recommendation">
+      <p><strong>Name:</strong> <strong>{recommendation.name}</strong></p>
+      <p>Category: {recommendation.category}</p>
+      <p>Type: {recommendation.type.toUpperCase()}</p>
+      <p>Action: {recommendation.action}</p>
+      <p>Current Price: {(recommendation.current_price / 100).toFixed(2)}</p>
+      <p className={recommendation.suggested_price > recommendation.current_price ? 'price-increase' : 'price-decrease'}>
+        Suggested Price: {(recommendation.suggested_price / 100).toFixed(2)}
+      </p>
+      <button onClick={() => handleAccept(recommendation)} className="accept-button">Accept</button>
+      <button onClick={() => handleDeny(recommendation)} className="deny-button">Deny</button>
+    </div>
+  ))}
+</div>
     );
   };
 
