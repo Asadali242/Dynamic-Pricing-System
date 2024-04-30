@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './DynamicPricingMenu.css';
 import socketIOClient from 'socket.io-client';
+import Item from './Item';
+
 
 function DynamicPricingMenu() {
   const [showEnrolledProducts, setShowEnrolledProducts] = useState(false);
@@ -106,13 +108,14 @@ function DynamicPricingMenu() {
       <div className="category-box">
         {topRecommendations.map((recommendation, index) => (
           <div key={index} className="recommendation">
-            <p>
-              Name: {recommendation.name} | Category: {recommendation.category} | Type: {recommendation.type.toUpperCase()} |
-              Action: {recommendation.action} | Current Price: {(recommendation.current_price / 100).toFixed(2)} |
-              Suggested Price: {(recommendation.suggested_price / 100).toFixed(2)}
-              <button onClick={() => handleAccept(recommendation)}>Accept</button>
-              <button onClick={() => handleDeny(recommendation)}>Deny</button>
-            </p>
+            <p>Name: {recommendation.name}</p>
+            <p>Category: {recommendation.category}</p>
+            <p>Type: {recommendation.type.toUpperCase()}</p>
+            <p>Action: {recommendation.action}</p>
+            <p>Current Price: {(recommendation.current_price / 100).toFixed(2)}</p>
+            <p>Suggested Price: {(recommendation.suggested_price / 100).toFixed(2)}</p>
+            <button onClick={() => handleAccept(recommendation)}>Accept</button>
+            <button onClick={() => handleDeny(recommendation)}>Deny</button>
           </div>
         ))}
       </div>

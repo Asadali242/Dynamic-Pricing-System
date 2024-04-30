@@ -4,7 +4,7 @@
 
 .sidebar {
   width: 250px;
-  height: 100vh;
+  height: 400vh;
   background-color: #ffffff;
   padding: 50px 20px 20px 20px; /* Adjust padding as needed */
   position: relative; /* Add relative positioning to allow absolute positioning of the image */
