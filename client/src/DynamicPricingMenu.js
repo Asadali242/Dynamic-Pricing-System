@@ -122,7 +122,7 @@ function DynamicPricingMenu() {
 
   // Function to sort the recommendations based on the absolute difference between current price and suggested price
   const sortRecommendations = (recommendations) => {
-    return recommendations.sort((a, b) => Math.abs(a.current_price - a.suggested_price) - Math.abs(b.current_price - b.suggested_price));
+    return recommendations.sort((a, b) => parseFloat(b.Percentage) - parseFloat(a.Percentage));
   };
 
   // Function to render the top 10 recommendations for the selected category
