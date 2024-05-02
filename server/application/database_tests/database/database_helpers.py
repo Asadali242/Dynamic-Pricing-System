@@ -27,7 +27,7 @@ class DatabaseHelpers(Database):
             conn = self.db.connect()
             cur = conn.cursor()
             query = """
-                SELECT id, manual_time_rule
+                SELECT id, name, price, manual_time_rule
                 FROM storeitems
                 WHERE manual_time_rule->>'active' = 'true'
             """
@@ -46,7 +46,7 @@ class DatabaseHelpers(Database):
             conn = self.db.connect()
             cur = conn.cursor()
             query = query = """
-                SELECT id, manual_seasonality_rule
+                SELECT id, name, price, manual_seasonality_rule
                 FROM storeitems
                 WHERE manual_seasonality_rule->>'active' = 'true'
             """

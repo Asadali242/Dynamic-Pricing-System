@@ -69,6 +69,8 @@ body {
   padding: 20px;
   border-radius: 5px;
   position: relative;
+  min-width: 700px; 
+  min-height: 200px;
 }
 
 .exit-button {
@@ -141,4 +143,24 @@ body {
   cursor: pointer; /* Add pointer cursor on hover */
   border-radius: 4px; /* Optional: Add rounded corners */
   border: 1px solid rgb(0, 0, 0);
+}
+
+.product-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.product-table th,
+.product-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.product-table th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.product-table td {
+  text-align: left;
 }

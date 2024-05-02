@@ -6,10 +6,117 @@ import Item from './Item';
 
 function DynamicPricingMenu() {
   const [showEnrolledProducts, setShowEnrolledProducts] = useState(false);
+  const [enrolledProducts, setEnrolledProducts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('hourly');
   const [pricingRecommendations, setPricingRecommendations] = useState([]);
   const [acceptedRecommendations, setAcceptedRecommendations] = useState([]);
   const [deniedRecommendations, setDeniedRecommendations] = useState([]);
   const [totalUnitsSold, setTotalUnitsSold] = useState(null);
+  
+
+  useEffect(() => {
+    // Fetch enrolled products when the component mounts
+    fetchEnrolledProducts();
+  }, []);
+
+  const fetchEnrolledProducts = () => {
+    fetch('http://localhost:5000/get_enrolled_products')
+      .then(response => response.json())
+      .then(data => {
+
+        // Assuming the response is an object with 'seasonal' and 'hourly' keys
+        const enrolledProductsData = data || {};
+        console.log('Enrolled Products:', enrolledProductsData);
+        setEnrolledProducts(enrolledProductsData);
+      })
+      .catch(error => {
+        console.error('Error fetching enrolled products:', error);
+      });
+  };
+
+  const renderHourlyProducts = () => {
+    const hourlyProducts = enrolledProducts.hourly || [];
+    return (
+      <div>
+        <h2>Hourly Products</h2>
+        <table className="product-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Current Price</th>
+              <th>Duration in Days</th>
+              <th>Timezone</th>
+              <th>Price Max</th>
+              <th>Price Min</th>
+              {/* Add additional column headers as needed */}
+            </tr>
+          </thead>
+          <tbody>
+            {hourlyProducts.map(([id, name, currentPrice, details], index) => (
+              <tr key={`hourly-${id}-${index}`}>
+                <td>{name}</td>
+                <td>{'$'+ currentPrice/100}</td>
+                <td>{details.durationInDays}</td>
+                <td>{details.timeZone}</td>
+                <td>{'$'+ Number(details.priceMax).toFixed(2)}</td>
+                <td>{'$'+ Number(details.priceMin).toFixed(2)}</td>
+                {/* Add additional columns for other details */}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+  
+  const renderSeasonalProducts = () => {
+    const seasonalProducts = enrolledProducts.seasonal || [];
+    return (
+      <div>
+        <h2>Seasonal Products</h2>
+        <table className="product-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Current Price</th>
+              <th>Duration in Years</th>
+              <th>Price Max</th>
+              <th>Price Min</th>
+              {/* Add additional column headers as needed */}
+            </tr>
+          </thead>
+          <tbody>
+            {seasonalProducts.map(([id, name, currentPrice, details], index) => (
+              <tr key={`seasonal-${id}-${index}`}>
+                <td>{name}</td>
+                <td>{'$'+ currentPrice/100}</td>
+                <td>{details.durationInYears}</td>
+                <td>{'$'+ Number(details.priceMax).toFixed(2)}</td>
+                <td>{'$'+ Number(details.priceMin).toFixed(2)}</td>
+                {/* Add additional columns for other details */}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+  };
+
+  const renderCategoryHeaders = () => {
+    return (
+      <div className="category-headers">
+        <button className={selectedCategory === 'hourly' ? 'selected' : ''} onClick={() => handleCategoryClick('hourly')}>Hourly</button>
+        <button className={selectedCategory === 'seasonal' ? 'selected' : ''} onClick={() => handleCategoryClick('seasonal')}>Seasonal</button>
+        {/* Add more category buttons as needed */}
+      </div>
+    );
+  };
+  
+
 
   const fetchTotalUnitsSold = async () => {
     try {
@@ -192,14 +299,17 @@ function DynamicPricingMenu() {
       {/* Enrolled Products popup */}
       {showEnrolledProducts && (
         <div className="popup">
-          <div className="popup-content">
+          <div className="popup-content" style={{ maxHeight: '85vh', overflowY: 'auto' }}>
             <button className="exit-button" onClick={() => setShowEnrolledProducts(false)}>Exit</button>
+            {renderCategoryHeaders()}
+            {selectedCategory === 'hourly' && renderHourlyProducts()}
+            {selectedCategory === 'seasonal' && renderSeasonalProducts()}
           </div>
         </div>
       )}
 
       <div className="pricing-recommendations">
-        <h3>Top 10 Price Suggestions for Unenrolled Products</h3>
+        <h3>Top 10 Price Suggestions for Products Not Enrolled in Manual Rules</h3>
           {/* Render top recommendations */}
           {renderTopRecommendations()}
         </div>
