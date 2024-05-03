@@ -11,6 +11,8 @@ function DynamicPricingMenu() {
   const [pricingRecommendations, setPricingRecommendations] = useState([]);
   const [acceptedRecommendations, setAcceptedRecommendations] = useState([]);
   const [deniedRecommendations, setDeniedRecommendations] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
   const [totalUnitsSold, setTotalUnitsSold] = useState(null);
   
 
@@ -142,6 +144,19 @@ function DynamicPricingMenu() {
     }
   };
 
+  const PopupMessage = () => {
+    if (!showPopup) return null;
+
+    return (
+      <div className="popup-container">
+        <div className="popup-message">
+          {popupMessage}
+          <button className="exit-button" onClick={() => setShowPopup(false)}>Exit</button>
+        </div>
+      </div>
+    );
+  };
+
   const handleSocketEvent = (suggestions) => {
     setPricingRecommendations(suggestions);
   };
@@ -179,6 +194,8 @@ function DynamicPricingMenu() {
         });
         return newState;
       });
+      setPopupMessage('The suggestion has been accepted.');
+      setShowPopup(true);
     })
     .catch(error => {
       console.error('Error clearing recommendation:', error);
@@ -221,6 +238,8 @@ function DynamicPricingMenu() {
         });
         return newState;
       });
+      setPopupMessage('The suggestion has been denied.');
+      setShowPopup(true);
     })
     .catch(error => {
       console.error('Error clearing recommendation:', error);
@@ -312,6 +331,7 @@ function DynamicPricingMenu() {
         <h3>Top 10 Price Suggestions for Products Not Enrolled in Manual Rules</h3>
           {/* Render top recommendations */}
           {renderTopRecommendations()}
+          <PopupMessage />
         </div>
       </div>
   );

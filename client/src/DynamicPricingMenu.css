@@ -145,6 +145,24 @@ body {
   border: 1px solid rgb(0, 0, 0);
 }
 
+.popup-container {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000; /* Ensure it's above other content */
+  background-color: rgba(0,0,0,0.6); /* Semi-transparent background */
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.popup-message {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
 .product-table {
   border-collapse: collapse;
   width: 100%;
