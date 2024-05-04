@@ -86,7 +86,7 @@ function DynamicPricingMenu() {
             <tr>
               <th>Name</th>
               <th>Current Price</th>
-              <th>End Date</th>
+              <th>Expires</th>
               <th>Price Max</th>
               <th>Price Min</th>
               {/* Add additional column headers as needed */}
