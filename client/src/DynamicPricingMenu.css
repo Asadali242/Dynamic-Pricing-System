@@ -147,8 +147,8 @@ body {
 
 .popup-container {
   position: fixed;
-  top: 20%;
-  left: 50%;
+  top: 60%;
+  left: 60%;
   transform: translate(-50%, -50%);
   z-index: 1000; /* Ensure it's above other content */
   background-color: rgba(0,0,0,0.6); /* Semi-transparent background */
@@ -158,7 +158,7 @@ body {
 
 .popup-message {
   background: white;
-  padding: 20px;
+  padding: 80px;
   border-radius: 5px;
   text-align: center;
 }
@@ -170,12 +170,12 @@ body {
 
 .product-table th,
 .product-table td {
-  border: 1px solid #ddd;
+  border: 1px solid #FF00FF;
   padding: 8px;
 }
 
 .product-table th {
-  background-color: #f2f2f2;
+  background-color: #FF00FF;
   text-align: left;
 }
 
