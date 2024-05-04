@@ -28,6 +28,22 @@ class DatabaseHelpersTest(unittest.TestCase):
         red_bull_id = '22000000-0000-0000-0000-000000000000'
         print("get item price, red bull: ", self.helper.fetchItemPriceFromDatabase('22000000-0000-0000-0000-000000000000'))
 
+    def test_fetch_item_hourly_price_max_from_database(self):
+        red_bull_id = '22000000-0000-0000-0000-000000000000'
+        print("get hourly item price max, Ruffles Queso Cheese Potato Chips: ", self.helper.fetchHourlyItemPriceMaxFromDatabase('10000000-0000-0000-0000-000000000000'))
+
+    def test_fetch_item_hourly_price_min_from_database(self):
+        red_bull_id = '22000000-0000-0000-0000-000000000000'
+        print("get hourly item price min, Ruffles Queso Cheese Potato Chips: ", self.helper.fetchHourlyItemPriceMinFromDatabase('10000000-0000-0000-0000-000000000000'))
+
+
+    def test_fetch_item_seasonal_price_max_from_database(self):
+        red_bull_id = '22000000-0000-0000-0000-000000000000'
+        print("get seasonal item price max, Ruffles Queso Cheese Potato Chips: ", self.helper.fetchSeasonalItemPriceMaxFromDatabase('10000000-0000-0000-0000-000000000000'))
+
+    def test_fetch_item_seasonal_price_min_from_database(self):
+        red_bull_id = '22000000-0000-0000-0000-000000000000'
+        print("get seasonal item price min, Ruffles Queso Cheese Potato Chips: ", self.helper.fetchSeasonalItemPriceMinFromDatabase('10000000-0000-0000-0000-000000000000'))
 
     def test_update_item_price_in_database(self):
         red_bull_id = '22000000-0000-0000-0000-000000000000'

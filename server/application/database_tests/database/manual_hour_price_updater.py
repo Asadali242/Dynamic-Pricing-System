@@ -13,7 +13,7 @@ class ManualHourPriceUpdater(Database):
         helper = DatabaseHelpers(self.db)
         price_history_updater = PriceHistoryUpdater(self.db)
         relevant_store_items = helper.fetchActiveManualHourRuleStoreItems()
-        for item_id, manual_time_rule in relevant_store_items:
+        for item_id, name, price, manual_time_rule in relevant_store_items:
             hourly_price_changes = manual_time_rule.get('hourlyPriceChanges', [])
             time_zone = manual_time_rule.get('timeZone')
             current_hour = helper.getCurrentHour(time_zone)
@@ -31,8 +31,11 @@ class ManualHourPriceUpdater(Database):
                     #change item's price based on the change type and percent
                     if change['type'] == '+':
                         item_price = helper.fetchItemPriceFromDatabase(item_id)
+                        item_price_max_hourly = Decimal(helper.fetchHourlyItemPriceMaxFromDatabase(item_id))
                         print("Current item price:", item_price)
                         new_price = item_price * (Decimal('1') + Decimal(change['percent']) / Decimal('100'))
+                        if new_price > item_price_max_hourly:
+                            new_price = item_price_max_hourly
                         print("New item price:", new_price)
                         helper.updateItemPriceInDatabase(item_id, new_price)
                         
@@ -42,8 +45,11 @@ class ManualHourPriceUpdater(Database):
                     elif change['type'] == '-':
                         # Assuming item price is fetched from database
                         item_price = helper.fetchItemPriceFromDatabase(item_id)
+                        item_price_min_hourly = Decimal(helper.fetchHourlyItemPriceMinFromDatabase(item_id))
                         print("Current item price:", item_price)
                         new_price = item_price * (Decimal('1') - Decimal(change['percent']) / Decimal('100'))
+                        if new_price < item_price_min_hourly:
+                            new_price = item_price_min_hourly
                         print("New item price:", new_price)
                         helper.updateItemPriceInDatabase(item_id, new_price)
 

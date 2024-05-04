@@ -6,6 +6,7 @@ from psycopg2 import Error
 import pytz
 from decimal import Decimal
 from .database import Database
+import json
 
 
 class DatabaseHelpers(Database):
@@ -89,6 +90,102 @@ class DatabaseHelpers(Database):
         except psycopg2.Error as e:
             print("Error fetching item price:", e)
             return None
+
+    def fetchHourlyItemPriceMaxFromDatabase(self, item_id):
+        try:
+            # Establish connection to the database
+            conn = self.db.connect()
+            cur = conn.cursor()
+            # Query to fetch item price by item_id
+            query = """
+                SELECT manual_time_rule
+                FROM storeitems
+                WHERE id = %s
+            """
+            cur.execute(query, (item_id,))
+            manual_time_rule = cur.fetchone()[0] 
+            #row = cur.fetchone()[0] 
+            #manual_time_rule_json = row[0]
+            #manual_time_rule = json.loads(manual_time_rule_json)
+            price_max = manual_time_rule.get('priceMax')
+            cur.close()
+            conn.close()
+            return price_max
+        except psycopg2.Error as e:
+            print("Error fetching item price max:", e)
+            return None
+    
+    def fetchSeasonalItemPriceMaxFromDatabase(self, item_id):
+        try:
+            # Establish connection to the database
+            conn = self.db.connect()
+            cur = conn.cursor()
+            # Query to fetch item price by item_id
+            query = """
+                SELECT manual_seasonality_rule
+                FROM storeitems
+                WHERE id = %s
+            """
+            cur.execute(query, (item_id,))
+            manual_time_rule = cur.fetchone()[0] 
+            #row = cur.fetchone()[0] 
+            #manual_time_rule_json = row[0]
+            #manual_time_rule = json.loads(manual_time_rule_json)
+            price_max = manual_time_rule.get('priceMax')
+            cur.close()
+            conn.close()
+            return price_max
+        except psycopg2.Error as e:
+            print("Error fetching item price max:", e)
+            return None
+          
+    def fetchHourlyItemPriceMinFromDatabase(self, item_id):
+        try:
+            # Establish connection to the database
+            conn = self.db.connect()
+            cur = conn.cursor()
+            # Query to fetch item price by item_id
+            query = """
+                SELECT manual_time_rule
+                FROM storeitems
+                WHERE id = %s
+            """
+            cur.execute(query, (item_id,))
+            manual_time_rule = cur.fetchone()[0] 
+            #row = cur.fetchone()[0] 
+            #manual_time_rule_json = row[0]
+            #manual_time_rule = json.loads(manual_time_rule_json)
+            price_min = manual_time_rule.get('priceMin')
+            cur.close()
+            conn.close()
+            return price_min
+        except psycopg2.Error as e:
+            print("Error fetching item price min:", e)
+            return None
+        
+    def fetchSeasonalItemPriceMinFromDatabase(self, item_id):
+        try:
+            # Establish connection to the database
+            conn = self.db.connect()
+            cur = conn.cursor()
+            # Query to fetch item price by item_id
+            query = """
+                SELECT manual_seasonality_rule
+                FROM storeitems
+                WHERE id = %s
+            """
+            cur.execute(query, (item_id,))
+            manual_time_rule = cur.fetchone()[0] 
+            #row = cur.fetchone()[0] 
+            #manual_time_rule_json = row[0]
+            #manual_time_rule = json.loads(manual_time_rule_json)
+            price_min = manual_time_rule.get('priceMin')
+            cur.close()
+            conn.close()
+            return price_min
+        except psycopg2.Error as e:
+            print("Error fetching item price min:", e)
+            return None
         
     #update current price of given store item
     def updateItemPriceInDatabase(self, item_id, new_price):
@@ -115,7 +212,7 @@ class DatabaseHelpers(Database):
 
             print("Item price updated successfully.")
         except psycopg2.Error as e:
-            print("Error updating item price:", e)
+            print("Error updating item price:", e) 
 
     def fetchItemIdByName(self, item_name):
         conn = self.db.connect()
