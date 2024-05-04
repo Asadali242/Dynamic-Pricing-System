@@ -2,6 +2,7 @@ import unittest
 from database.season_rule_updater import SeasonRuleUpdater
 from database.database import Database
 import json
+from datetime import datetime
 
 class SeasonRuleUpdaterTest(unittest.TestCase):
     def setUp(self):
@@ -13,6 +14,8 @@ class SeasonRuleUpdaterTest(unittest.TestCase):
         DB_NAME = "postgres"
         self.db = Database(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
         self.season_rule_updater = SeasonRuleUpdater(self.db)
+        dateOfCreation = datetime.now()
+        dateOfCreationStr = dateOfCreation.isoformat()
         #default seasonality rule data
         self.default_seasonality_rule_data = {
             "active": False,
@@ -20,7 +23,8 @@ class SeasonRuleUpdaterTest(unittest.TestCase):
             "priceMax": None,
             "priceMin": None,
             "timeZone": "",
-            "seasonalPriceChanges": {}
+            "createDate" : None,
+            "seasonalPriceChanges": {},
         }
         #sample seasonality rule data
         self.sample_seasonality_rule_data = {
@@ -29,6 +33,7 @@ class SeasonRuleUpdaterTest(unittest.TestCase):
             "priceMax": 10,
             "priceMin": 4,
             "timeZone": "EST",
+            "createDate" : dateOfCreationStr,
             "seasonalPriceChanges": [
                 {"season": "Spring", "type": "+", "percent": 1},
                 {"season": "Summer", "type": "-", "percent": 2},

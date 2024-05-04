@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, request
 from database_tests.database.time_rule_updater import TimeRuleUpdater
 from database_tests.database.season_rule_updater import SeasonRuleUpdater
 from services import time_rule_updater, season_rule_updater
+from datetime import datetime
 
 rule_blueprint = Blueprint('rule_blueprint', __name__)
 
@@ -21,6 +22,8 @@ def create_rule():
         timezone = data.get('timezone')
         hourlyPriceChanges = data.get('hourlyPriceChanges')
         seasonalPriceChanges = data.get('seasonalPriceChanges')
+        dateOfCreation = datetime.now()
+        dateOfCreationStr = dateOfCreation.isoformat()
         
         if ruleType == "TimeOfDay":
             manual_time_rule_data = {
@@ -29,7 +32,8 @@ def create_rule():
                 "priceMax": priceMaximum,
                 "priceMin": priceMinimum,
                 "timeZone": timezone,
-                "hourlyPriceChanges": hourlyPriceChanges
+                "createDate" : dateOfCreationStr,
+                "hourlyPriceChanges": hourlyPriceChanges,
             }
             time_rule_updater.updateManualTimeRuleForCategory(category, json.dumps(manual_time_rule_data))
         if ruleType == "Seasonality":
@@ -39,7 +43,8 @@ def create_rule():
                 "priceMax": priceMaximum,
                 "priceMin": priceMinimum,
                 "timeZone": timezone,
-                "seasonalPriceChanges": seasonalPriceChanges
+                "createDate" : dateOfCreationStr,
+                "seasonalPriceChanges": seasonalPriceChanges,
             }
             season_rule_updater.updateManualSeasonalityRuleForCategory(category, json.dumps(manual_seasonality_rule_data))
         return jsonify({'message': 'rule created successfully'})

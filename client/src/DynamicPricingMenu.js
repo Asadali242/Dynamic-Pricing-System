@@ -46,25 +46,30 @@ function DynamicPricingMenu() {
             <tr>
               <th>Name</th>
               <th>Current Price</th>
-              <th>Duration in Days</th>
+              <th>Expires</th>
               <th>Timezone</th>
               <th>Price Max</th>
               <th>Price Min</th>
-              {/* Add additional column headers as needed */}
             </tr>
           </thead>
           <tbody>
-            {hourlyProducts.map(([id, name, currentPrice, details], index) => (
-              <tr key={`hourly-${id}-${index}`}>
-                <td>{name}</td>
-                <td>{'$'+ currentPrice/100}</td>
-                <td>{details.durationInDays}</td>
-                <td>{details.timeZone}</td>
-                <td>{'$'+ Number(details.priceMax).toFixed(2)}</td>
-                <td>{'$'+ Number(details.priceMin).toFixed(2)}</td>
-                {/* Add additional columns for other details */}
-              </tr>
-            ))}
+            {hourlyProducts.map(([id, name, currentPrice, details], index) => {
+              // End date based on create date and duration in days
+              const createDate = new Date(details.createDate);
+              const durationInDays = parseInt(details.durationInDays);
+              const endDate = new Date(createDate.getTime() + durationInDays * 24 * 60 * 60 * 1000);
+              return (
+                <tr key={`hourly-${id}-${index}`}>
+                  <td>{name}</td>
+                  <td>{'$'+ currentPrice/100}</td>
+                  <td>{endDate.toLocaleDateString()}</td>
+                  <td>{details.timeZone}</td>
+                  <td>{'$'+ Number(details.priceMax).toFixed(2)}</td>
+                  <td>{'$'+ Number(details.priceMin).toFixed(2)}</td>
+                  {/* Add additional columns for other details */}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -81,23 +86,30 @@ function DynamicPricingMenu() {
             <tr>
               <th>Name</th>
               <th>Current Price</th>
-              <th>Duration in Years</th>
+              <th>End Date</th>
               <th>Price Max</th>
               <th>Price Min</th>
               {/* Add additional column headers as needed */}
             </tr>
           </thead>
           <tbody>
-            {seasonalProducts.map(([id, name, currentPrice, details], index) => (
-              <tr key={`seasonal-${id}-${index}`}>
-                <td>{name}</td>
-                <td>{'$'+ currentPrice/100}</td>
-                <td>{details.durationInYears}</td>
-                <td>{'$'+ Number(details.priceMax).toFixed(2)}</td>
-                <td>{'$'+ Number(details.priceMin).toFixed(2)}</td>
-                {/* Add additional columns for other details */}
-              </tr>
-            ))}
+            {seasonalProducts.map(([id, name, currentPrice, details], index) => {
+              // Calculate end date based on create date and duration in years
+              const createDate = new Date(details.createDate);
+              const durationInYears = parseInt(details.durationInYears);
+              const endDate = new Date(createDate.getFullYear() + durationInYears, createDate.getMonth(), createDate.getDate());
+              
+              return (
+                <tr key={`seasonal-${id}-${index}`}>
+                  <td>{name}</td>
+                  <td>{'$'+ currentPrice/100}</td>
+                  <td>{endDate.toLocaleDateString()}</td>
+                  <td>{'$'+ Number(details.priceMax).toFixed(2)}</td>
+                  <td>{'$'+ Number(details.priceMin).toFixed(2)}</td>
+                  {/* Add additional columns for other details */}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

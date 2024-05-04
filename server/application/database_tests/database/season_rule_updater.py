@@ -70,6 +70,7 @@ class SeasonRuleUpdater(Database):
             "priceMax": None,
             "priceMin": None,
             "timeZone": "",
+            "createDate" : None,
             "seasonalPriceChanges": {}
         }
         try:

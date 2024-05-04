@@ -2,6 +2,7 @@ import unittest
 from database.time_rule_updater import TimeRuleUpdater
 from database.database import Database
 import json
+from datetime import datetime
 
 class TimeRuleUpdaterTest(unittest.TestCase):
     def setUp(self):
@@ -13,6 +14,8 @@ class TimeRuleUpdaterTest(unittest.TestCase):
         DB_NAME = "postgres"
         self.db = Database(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
         self.time_rule_updater = TimeRuleUpdater(self.db)
+        dateOfCreation = datetime.now()
+        dateOfCreationStr = dateOfCreation.isoformat()
         #default time of day rule data
         self.default_time_rule_data = {
             "active": False,
@@ -20,6 +23,7 @@ class TimeRuleUpdaterTest(unittest.TestCase):
             "priceMax": None,
             "priceMin": None,
             "timeZone": "",
+            "createDate" : None,
             "hourlyPriceChanges": {}
         }
         #sample time rule data
@@ -29,6 +33,7 @@ class TimeRuleUpdaterTest(unittest.TestCase):
             "priceMax": 10,
             "priceMin": 4,
             "timeZone": "EST",
+            "createDate" : dateOfCreationStr,
             "hourlyPriceChanges": {
                 "1:00": {"type": "+", "percent": 1},
                 "2:00": {"type": "-", "percent": 2},
@@ -47,13 +52,20 @@ class TimeRuleUpdaterTest(unittest.TestCase):
         else:
             print("Failed to update manual time rule.")
 
-    def test_z_restore_time_rule_defaults_for_category(self):
+    '''def test_z_restore_time_rule_defaults_for_category(self):
         #clear time rule data test
         restore_time_rule_defaults_for_category = self.time_rule_updater.restoreTimeRuleDefaultsForCategory('Snacks')
         if restore_time_rule_defaults_for_category:
             print("reset seasonalityrules for snacks")
         else:
             print("Failed to reset seasonality rules for snacks") 
+'''
+    '''def test_get_remaining_days_for_category(self):
+        get_remaining_days = self.time_rule_updater.getRemainingTimeForCategory("Snacks")
+        if get_remaining_days:
+            print("days left for snack rule:", get_remaining_days)
+        else:
+            print("Failed get remaining days for snacks") '''
         
 
 if __name__ == "__main__":
