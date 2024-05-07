@@ -1,5 +1,5 @@
 import datetime
-from services import hybrid_hour_suggester
+from services import hybrid_hour_suggester, hybrid_season_suggester
 from flask_socketio import emit
 from decimal import Decimal
 
@@ -9,6 +9,7 @@ def hourly_suggestion_updater(suggestions):
     current_time = datetime.datetime.now().hour
     suggestions_data = hybrid_hour_suggester.suggest_price_change(current_time) 
     suggestions.update(suggestions_data)  # Update the global suggestions variable
+    print("Sent the following Suggestions to the browser: ", suggestions)
 
 #updates the global variable and emits to the client so it will update without needing to fetch
 def hourly_suggestion_emitter(socketio, suggestions):
@@ -17,7 +18,41 @@ def hourly_suggestion_emitter(socketio, suggestions):
     suggestions.update(suggestions_data)  # Update the global suggestions variable
     converted_suggestions = convert_decimals_to_float(suggestions_data)
     socketio.emit('hourly_suggestions', converted_suggestions)
-    print("Updated suggestions for the hour")
+    print("hourly emitter Updated hourly suggestions for the hour")
+    print("Suggestions: ", suggestions)
+
+def seasonal_suggestion_updater(suggestions):
+    current_month = datetime.datetime.now().month
+    current_season = get_current_season(current_month)
+    suggestions_data = hybrid_season_suggester.suggest_price_change(current_season) 
+    #suggestions.update(suggestions_data)
+    for category, items in suggestions_data.items():
+        if category in suggestions:
+            suggestions[category].extend(items)
+        else:
+            suggestions[category] = items
+    print("Sent the following  Suggestions to the browser: ", suggestions)
+
+    
+def seasonal_suggestion_emitter(socketio, suggestions):
+    current_month = datetime.datetime.now().month
+    current_season = get_current_season(current_month)
+    suggestions_data = hybrid_season_suggester.suggest_price_change(current_season) 
+    #suggestions.update(suggestions_data)
+    for category, items in suggestions_data.items():
+        if category in suggestions:
+            suggestions[category].extend(items)
+        else:
+            suggestions[category] = items
+    print("seasonalemitter Sent the following Suggestions to the browser: ", suggestions)
+
+    converted_suggestions = convert_decimals_to_float(suggestions_data)
+    socketio.emit('seasonal_suggestions', converted_suggestions)
+    print("Updated seasonal suggestions for the hour")
+    print("Suggestions: ", suggestions)
+
+
+
 
 def convert_decimals_to_float(obj):
     if isinstance(obj, dict):
@@ -28,3 +63,16 @@ def convert_decimals_to_float(obj):
         return float(obj)
     else:
         return obj
+    
+
+def get_current_season(month):
+    if month in [12, 1, 2]:
+        return "Winter"
+    elif month in [3, 4, 5]:
+        return "Spring"
+    elif month in [6, 7, 8]:
+        return "Summer"
+    elif month in [9, 10, 11]:
+        return "Fall"
+    else:
+        return "Unknown"
