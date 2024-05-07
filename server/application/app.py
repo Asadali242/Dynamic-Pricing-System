@@ -8,7 +8,7 @@ from price_change_routes import suggestion_price_update_blueprint
 from dashboard_routes import dashboard_statistic_blueprint
 from scheduler import initialize_scheduler, register_jobs, register_shutdown
 from rule_based_price_updates import hourly_update, seasonal_update, new_minute_update
-from suggestion_updater import hourly_suggestion_updater, hourly_suggestion_emitter
+from suggestion_updater import hourly_suggestion_updater, hourly_suggestion_emitter, seasonal_suggestion_updater, seasonal_suggestion_emitter
 from services import hybrid_price_updater
 
 app = Flask(__name__)
@@ -22,7 +22,8 @@ app.register_blueprint(dashboard_statistic_blueprint)
 
 initialize_scheduler()
 suggestions = {} 
-register_jobs(hourly_update, new_minute_update, seasonal_update, hourly_suggestion_emitter, socketio, suggestions)
+
+register_jobs(hourly_update, new_minute_update, seasonal_update, hourly_suggestion_emitter, seasonal_suggestion_emitter, socketio, suggestions)
 register_shutdown()
 
 
@@ -31,6 +32,7 @@ register_shutdown()
 def get_recommendations():
     if suggestions is None or not suggestions:
         hourly_suggestion_updater(suggestions)
+        #seasonal_suggestion_updater(suggestions)
     return jsonify(suggestions)
 
 #when a recommendation is accepted or denied, we clear it from the server dict of suggestions

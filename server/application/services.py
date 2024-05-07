@@ -7,6 +7,7 @@ from database_tests.database.manual_hour_price_updater import ManualHourPriceUpd
 from database_tests.database.manual_season_price_updater import ManualSeasonPriceUpdater
 from database_tests.database.price_history_updater import PriceHistoryUpdater
 from database_tests.database.hybrid_time_suggestion import HybridTimeSuggestion
+from database_tests.database.hybrid_seasonal_suggestion import HybridSeasonalSuggestion
 from database_tests.database.hybrid_price_updater import HybridPriceUpdater
 from database_tests.database.total_units_sold_retriever import TotalUnitsSoldRetriever
 from database_tests.database.database_helpers import DatabaseHelpers
@@ -26,6 +27,7 @@ manual_season_price_updater = ManualSeasonPriceUpdater(db)
 sales_history_getter = SalesHistoryGetter(db)
 price_history_updater = PriceHistoryUpdater(db)
 hybrid_hour_suggester = HybridTimeSuggestion(db)
+hybrid_season_suggester = HybridSeasonalSuggestion(db)
 hybrid_price_updater = HybridPriceUpdater(db)
 total_units_sold_retriever = TotalUnitsSoldRetriever(db)
 database_helpers = DatabaseHelpers(db)
