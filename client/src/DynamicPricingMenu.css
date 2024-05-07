@@ -170,12 +170,12 @@ body {
 
 .product-table th,
 .product-table td {
-  border: 1px solid #ddd;
+  border: 1px solid #FF00FF;
   padding: 8px;
 }
 
 .product-table th {
-  background-color: #f2f2f2;
+  background-color: #FF00FF;
   text-align: left;
 }
 
