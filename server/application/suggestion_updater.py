@@ -22,7 +22,9 @@ def hourly_suggestion_emitter(socketio, suggestions):
     print("Suggestions: ", suggestions)
 
 def seasonal_suggestion_updater(suggestions):
-    suggestions_data = hybrid_season_suggester.suggest_price_change(1) 
+    current_month = datetime.datetime.now().month
+    current_season = get_current_season(current_month)
+    suggestions_data = hybrid_season_suggester.suggest_price_change(current_season) 
     #suggestions.update(suggestions_data)
     for category, items in suggestions_data.items():
         if category in suggestions:
@@ -33,7 +35,9 @@ def seasonal_suggestion_updater(suggestions):
 
     
 def seasonal_suggestion_emitter(socketio, suggestions):
-    suggestions_data = hybrid_season_suggester.suggest_price_change(1) 
+    current_month = datetime.datetime.now().month
+    current_season = get_current_season(current_month)
+    suggestions_data = hybrid_season_suggester.suggest_price_change(current_season) 
     #suggestions.update(suggestions_data)
     for category, items in suggestions_data.items():
         if category in suggestions:
@@ -59,3 +63,16 @@ def convert_decimals_to_float(obj):
         return float(obj)
     else:
         return obj
+    
+
+def get_current_season(month):
+    if month in [12, 1, 2]:
+        return "Winter"
+    elif month in [3, 4, 5]:
+        return "Spring"
+    elif month in [6, 7, 8]:
+        return "Summer"
+    elif month in [9, 10, 11]:
+        return "Fall"
+    else:
+        return "Unknown"
