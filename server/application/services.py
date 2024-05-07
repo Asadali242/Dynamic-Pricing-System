@@ -11,6 +11,8 @@ from database_tests.database.hybrid_seasonal_suggestion import HybridSeasonalSug
 from database_tests.database.hybrid_price_updater import HybridPriceUpdater
 from database_tests.database.total_units_sold_retriever import TotalUnitsSoldRetriever
 from database_tests.database.database_helpers import DatabaseHelpers
+from database_tests.database.total_sales_retriever import TotalSalesRetriever
+
 
 
 DB_HOST = "lula-dynamicpricing-testdb.ca3vbbjlumqp.us-east-1.rds.amazonaws.com"
@@ -31,3 +33,5 @@ hybrid_season_suggester = HybridSeasonalSuggestion(db)
 hybrid_price_updater = HybridPriceUpdater(db)
 total_units_sold_retriever = TotalUnitsSoldRetriever(db)
 database_helpers = DatabaseHelpers(db)
+total_sales_retriever = TotalSalesRetriever(db)
+

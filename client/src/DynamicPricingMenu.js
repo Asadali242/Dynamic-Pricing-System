@@ -14,6 +14,8 @@ function DynamicPricingMenu() {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
   const [totalUnitsSold, setTotalUnitsSold] = useState(null);
+  const [totalSales, setTotaSales] = useState(null);
+
   
 
   useEffect(() => {
@@ -144,6 +146,20 @@ function DynamicPricingMenu() {
 
   useEffect(() => {
     fetchTotalUnitsSold(); 
+  }, []);
+
+  const fetchTotalSales = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/get_total_sales');
+      const data = await response.json();
+      setTotaSales(data);
+    } catch (error) {
+      setTotaSales('Error fetching data');
+    }
+  };
+
+  useEffect(() => {
+    fetchTotalSales(); 
   }, []);
 
   const fetchRecommendations = async () => {
@@ -313,6 +329,7 @@ function DynamicPricingMenu() {
           </div>
           <div className="dashboard-section">
             <h3>Total Sales</h3>
+            <p>{totalSales ? `$${totalSales.toLocaleString()}` : 'Loading...'}</p>
           </div>
           <div className="dashboard-section">
             <h3>Margin</h3>
