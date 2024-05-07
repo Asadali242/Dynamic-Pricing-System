@@ -534,8 +534,8 @@ function InventoryMenu() {
       )}
       <div className="pricing-recommendations">
         {/* Placeholder for pricing recommendations */}
-        <h3>Pricing Recommendations</h3>
-        <p>Algo generated reccomendations go here</p>
+        <h3> </h3>
+        <p> </p>
       </div>
     </div>
   );
