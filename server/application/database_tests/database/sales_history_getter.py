@@ -85,7 +85,7 @@ class SalesHistoryGetter(Database):
         finally:
             self.db.close(conn, cur)
 
-    def fetchDataForSeasonRuleRecommendations(self):
+    def fetchDataForSeasonRuleRecommendations(self, season):
         conn = self.db.connect()
         if conn is None:
             return {}
@@ -93,7 +93,7 @@ class SalesHistoryGetter(Database):
         try:
             cur = conn.cursor()
 
-            # seasons based on months
+            # Define the seasons mapping
             seasons = {
                 "Winter": [12, 1, 2],
                 "Spring": [3, 4, 5],
@@ -101,14 +101,16 @@ class SalesHistoryGetter(Database):
                 "Fall": [9, 10, 11]
             }
 
-            current_season = self.getCurrentSeason()
+            if season not in seasons:
+                print(f"Invalid season provided: {season}")
+                return {}
 
-            #start and end dates for the previous year's seasons
+            # Start and end dates for the previous year's seasons
             today = datetime.now()
             last_year_start = datetime(today.year - 1, 1, 1)
             last_year_end = datetime(today.year - 1, 12, 31)
 
-            # Query to fetch data for each category
+            # Query to fetch data for each category and season
             query = """
                 SELECT c.name AS category_name,
                     si.name AS item_name,
@@ -125,7 +127,7 @@ class SalesHistoryGetter(Database):
                     AND oi.createdate BETWEEN %s AND %s
                 GROUP BY c.name, si.name, si.price;
             """
-            cur.execute(query, (tuple(seasons[current_season]), tuple(seasons[current_season]), last_year_start, last_year_end))
+            cur.execute(query, (tuple(seasons[season]), tuple(seasons[season]), last_year_start, last_year_end))
             data = cur.fetchall()
 
             # Construct the result dictionary
@@ -139,18 +141,13 @@ class SalesHistoryGetter(Database):
                 overall_average_price_any_given_season = row[5]
                 average_price_this_season = row[6]
 
-                # Handle null values
-                if current_price is None:
-                    current_price = "N/A"
-                if overall_average_quantity_any_given_season is None:
-                    overall_average_quantity_any_given_season = "N/A"
-                if average_quantity_current_season is None:
-                    average_quantity_current_season = "N/A"
-                if overall_average_price_any_given_season is None:
-                    overall_average_price_any_given_season = "N/A"
-                if average_price_this_season is None:
-                    average_price_this_season = "N/A"
-                    
+                # Handle null values by replacing them with "N/A"
+                current_price = current_price if current_price is not None else "N/A"
+                overall_average_quantity_any_given_season = overall_average_quantity_any_given_season if overall_average_quantity_any_given_season is not None else "N/A"
+                average_quantity_current_season = average_quantity_current_season if average_quantity_current_season is not None else "N/A"
+                overall_average_price_any_given_season = overall_average_price_any_given_season if overall_average_price_any_given_season is not None else "N/A"
+                average_price_this_season = average_price_this_season if average_price_this_season is not None else "N/A"
+
                 # Create a dictionary with descriptive variable names
                 item_data = {
                     "name": item_name,
@@ -173,19 +170,3 @@ class SalesHistoryGetter(Database):
             return {}
         finally:
             self.db.close(conn, cur)
-
-    def getCurrentSeason(self):
-        seasons = {
-            "Winter": [12, 1, 2],
-            "Spring": [3, 4, 5],
-            "Summer": [6, 7, 8],
-            "Fall": [9, 10, 11]
-        }
-        current_month = datetime.now().month
-        current_season = None
-        for season, months in seasons.items():
-            if current_month in months:
-                current_season = season
-                break
-
-        return current_season

@@ -212,8 +212,17 @@ class SalesHistoryGetterTest(unittest.TestCase):
         print("\n\n\n")
 
     def test_fetch_data_for_seasonality_rule_recommendations(self):
-        print("seasonal history", self.sales_history_getter.fetchDataForSeasonRuleRecommendations())
-        print("\n\n\n")
+        seasons = ["Winter", "Spring", "Summer", "Fall"]
+        
+        # Test for each valid season
+        for season in seasons:
+            print(f"Testing season: {season}")
+            seasonal_data = self.sales_history_getter.fetchDataForSeasonRuleRecommendations(season)
+            
+            # Validate that the result is a dictionary
+            self.assertIsInstance(seasonal_data, dict, f"Result for season {season} should be a dictionary.")
+            
+            print(f"Seasonal data for {season}: {seasonal_data}\n\n")
 
 
 

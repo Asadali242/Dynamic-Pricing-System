@@ -18,7 +18,8 @@ class HybridSeasonalSuggestionTest(unittest.TestCase):
 
     def test_suggest_price_change(self):
         print("Testing suggest_price_change for a specific season...")
-        suggestions = self.hybrid_seasonal_suggestion.suggest_price_change('summer')  # Assuming 'summer' is a valid season
+        # Use a valid season name like "Winter", "Spring", "Summer", or "Fall"
+        suggestions = self.hybrid_seasonal_suggestion.suggest_price_change("Summer")
         self.assertIsInstance(suggestions, dict, "Suggestions should be returned as a dictionary.")
         self.assertTrue(suggestions, "Suggestions should not be empty.")
 
