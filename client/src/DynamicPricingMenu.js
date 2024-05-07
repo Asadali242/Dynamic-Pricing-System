@@ -319,7 +319,7 @@ function DynamicPricingMenu() {
         <div className="dashboard-sections">
           <div className="dashboard-section">
             <h3>Products Sold</h3>
-            <p>{Number.isFinite(totalUnitsSold) ? totalUnitsSold : 'Loading...'}</p>
+            <p className="value-text">{totalUnitsSold ? totalUnitsSold : 'Loading...'}</p>
           </div>
           <div className="dashboard-section">
             <h3>Missed Sales</h3>
@@ -329,7 +329,7 @@ function DynamicPricingMenu() {
           </div>
           <div className="dashboard-section">
             <h3>Total Sales</h3>
-            <p>{totalSales ? `$${totalSales.toLocaleString()}` : 'Loading...'}</p>
+            <p className="value-text">{totalSales ? `$${totalSales.toLocaleString()}` : 'Loading...'}</p>
           </div>
           <div className="dashboard-section">
             <h3>Margin</h3>

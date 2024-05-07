@@ -182,3 +182,11 @@ body {
 .product-table td {
   text-align: left;
 }
+
+.value-text {
+  font-weight: 600; /* Lighter than typical bold but still bold */
+}
+
+h2, h3 {
+  font-weight: bold; /* Default bold, typically 700 */
+}

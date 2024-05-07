@@ -12,7 +12,7 @@ class TotalUnitsSoldRetriever(Database):
         try:
             conn = self.db.connect()
             cur = conn.cursor()
-            query = "SELECT SUM(quantity) FROM orderitems"
+            query = "SELECT TO_CHAR(FLOOR(SUM(quantity)), 'FM999,999,999') AS Formatted_Average_Quantity FROM orderitems;"
             cur.execute(query)
             total_products_sold = cur.fetchone()[0]
             print(total_products_sold)
