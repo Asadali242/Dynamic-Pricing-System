@@ -50,7 +50,7 @@ class TimeRuleUpdaterTest(unittest.TestCase):
         #time rule database update test
         default_time_rule_data_json = json.dumps(self.default_time_rule_data)
         sample_time_rule_data_json = json.dumps(self.sample_time_rule_data)
-        update_manual_time_rule_result = self.time_rule_updater.updateManualTimeRuleForCategory('Snacks', sample_time_rule_data_json)
+        update_manual_time_rule_result = self.time_rule_updater.updateManualTimeRuleForCategory('Beverages', sample_time_rule_data_json)
         if update_manual_time_rule_result:
             print("Manual time rule updated successfully.")
         else:

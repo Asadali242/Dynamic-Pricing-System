@@ -49,7 +49,7 @@ class SeasonRuleUpdaterTest(unittest.TestCase):
         #seasonality rule database update test
         default_seasonality_rule_data_json = json.dumps(self.default_seasonality_rule_data)
         sample_seasonality_rule_data_json = json.dumps(self.sample_seasonality_rule_data)
-        update_manual_seasonality_rule_result = self.season_rule_updater.updateManualSeasonalityRuleForCategory('Snacks', sample_seasonality_rule_data_json)
+        update_manual_seasonality_rule_result = self.season_rule_updater.updateManualSeasonalityRuleForCategory('Beverages', sample_seasonality_rule_data_json)
         if update_manual_seasonality_rule_result:
             print("Manual seasonality rule updated successfully.")
         else:
