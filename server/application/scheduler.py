@@ -6,7 +6,7 @@ scheduler = BackgroundScheduler()
 def initialize_scheduler():
     scheduler.start()
 
-def register_jobs(hourly_update, new_minute_update, seasonal_update, hourly_suggestion_emitter, seasonal_suggestion_emitter, socketio, suggestions):
+def register_jobs(hourly_update, new_minute_update, seasonal_update, hourly_suggestion_emitter, seasonal_suggestion_emitter, clear_expired_rules, socketio, suggestions):
     scheduler.add_job(hourly_update, 'cron', hour='*')  
 
     #should be every hour, just doing minute for testing
@@ -18,6 +18,8 @@ def register_jobs(hourly_update, new_minute_update, seasonal_update, hourly_sugg
 
     scheduler.add_job(new_minute_update, 'cron', minute='*')
     scheduler.add_job(seasonal_update, 'cron', month='3,6,9,12', day='1', hour='0', minute='0')  
+    
+    scheduler.add_job(clear_expired_rules, 'cron', minute='*')
 
 def register_shutdown():
     atexit.register(lambda: scheduler.shutdown())

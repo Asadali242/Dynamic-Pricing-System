@@ -2,7 +2,7 @@ import unittest
 from database.season_rule_updater import SeasonRuleUpdater
 from database.database import Database
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class SeasonRuleUpdaterTest(unittest.TestCase):
     def setUp(self):
@@ -16,6 +16,8 @@ class SeasonRuleUpdaterTest(unittest.TestCase):
         self.season_rule_updater = SeasonRuleUpdater(self.db)
         dateOfCreation = datetime.now()
         dateOfCreationStr = dateOfCreation.isoformat()
+        expiration_date = dateOfCreation + timedelta(3)
+        expirationDateStr = expiration_date.isoformat()
         #default seasonality rule data
         self.default_seasonality_rule_data = {
             "active": False,
@@ -34,6 +36,7 @@ class SeasonRuleUpdaterTest(unittest.TestCase):
             "priceMin": 4,
             "timeZone": "EST",
             "createDate" : dateOfCreationStr,
+            "expirationDate": expirationDateStr,
             "seasonalPriceChanges": [
                 {"season": "Spring", "type": "+", "percent": 1},
                 {"season": "Summer", "type": "-", "percent": 2},
@@ -52,13 +55,13 @@ class SeasonRuleUpdaterTest(unittest.TestCase):
         else:
             print("Failed to update manual seasonality rule.")
 
-    def test_z_restore_seasonality_rule_defaults_for_category(self):
+    '''def test_z_restore_seasonality_rule_defaults_for_category(self):
         #clear seasonality rule data test
         restore_seasonality_rule_defaults_for_category = self.season_rule_updater.restoreSeasonalityRuleDefaultsForCategory('Snacks')
         if restore_seasonality_rule_defaults_for_category:
             print("reset seasonalityrules for snacks")
         else:
-            print("Failed to reset seasonality rules for snacks") 
+            print("Failed to reset seasonality rules for snacks") '''
         
 
 

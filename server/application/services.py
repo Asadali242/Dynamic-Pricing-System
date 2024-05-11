@@ -12,6 +12,7 @@ from database_tests.database.hybrid_price_updater import HybridPriceUpdater
 from database_tests.database.total_units_sold_retriever import TotalUnitsSoldRetriever
 from database_tests.database.database_helpers import DatabaseHelpers
 from database_tests.database.total_sales_retriever import TotalSalesRetriever
+from database_tests.database.expired_rule_wiper import ExpiredRuleWiper
 
 
 
@@ -34,4 +35,5 @@ hybrid_price_updater = HybridPriceUpdater(db)
 total_units_sold_retriever = TotalUnitsSoldRetriever(db)
 database_helpers = DatabaseHelpers(db)
 total_sales_retriever = TotalSalesRetriever(db)
+expired_rule_wiper = ExpiredRuleWiper(db)
 

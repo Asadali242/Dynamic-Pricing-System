@@ -2,7 +2,7 @@ import unittest
 from database.time_rule_updater import TimeRuleUpdater
 from database.database import Database
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class TimeRuleUpdaterTest(unittest.TestCase):
     def setUp(self):
@@ -16,6 +16,9 @@ class TimeRuleUpdaterTest(unittest.TestCase):
         self.time_rule_updater = TimeRuleUpdater(self.db)
         dateOfCreation = datetime.now()
         dateOfCreationStr = dateOfCreation.isoformat()
+
+        expiration_date = dateOfCreation + timedelta(3)
+        expirationDateStr = expiration_date.isoformat()
         #default time of day rule data
         self.default_time_rule_data = {
             "active": False,
@@ -34,6 +37,7 @@ class TimeRuleUpdaterTest(unittest.TestCase):
             "priceMin": 4,
             "timeZone": "EST",
             "createDate" : dateOfCreationStr,
+            "expirationDate": expirationDateStr,
             "hourlyPriceChanges": {
                 "1:00": {"type": "+", "percent": 1},
                 "2:00": {"type": "-", "percent": 2},
