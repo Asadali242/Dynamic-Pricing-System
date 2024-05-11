@@ -26,7 +26,8 @@ def create_rule():
         dateOfCreationStr = dateOfCreation.isoformat()
 
         # Calculate expiration date based on current date and duration
-        expiration_date = dateOfCreation + timedelta(days=duration) if ruleType == "TimeOfDay" else dateOfCreation + timedelta(days=365 * duration)
+        durationInt = int(duration)
+        expiration_date = dateOfCreation + timedelta(days=durationInt) if ruleType == "TimeOfDay" else dateOfCreation + timedelta(days=365 * durationInt)
         expirationDateStr = expiration_date.isoformat()
         
         if ruleType == "TimeOfDay":

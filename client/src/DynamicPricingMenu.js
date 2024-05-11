@@ -57,14 +57,12 @@ function DynamicPricingMenu() {
           <tbody>
             {hourlyProducts.map(([id, name, currentPrice, details], index) => {
               // End date based on create date and duration in days
-              const createDate = new Date(details.createDate);
-              const durationInDays = parseInt(details.durationInDays);
-              const endDate = new Date(createDate.getTime() + durationInDays * 24 * 60 * 60 * 1000);
+              const expirationDate = new Date(details.expirationDate);
               return (
                 <tr key={`hourly-${id}-${index}`}>
                   <td>{name}</td>
                   <td>{'$'+ currentPrice/100}</td>
-                  <td>{endDate.toLocaleDateString()}</td>
+                  <td>{expirationDate.toLocaleDateString()}</td>
                   <td>{details.timeZone}</td>
                   <td>{'$'+ Number(details.priceMax).toFixed(2)}</td>
                   <td>{'$'+ Number(details.priceMin).toFixed(2)}</td>
@@ -97,15 +95,12 @@ function DynamicPricingMenu() {
           <tbody>
             {seasonalProducts.map(([id, name, currentPrice, details], index) => {
               // Calculate end date based on create date and duration in years
-              const createDate = new Date(details.createDate);
-              const durationInYears = parseInt(details.durationInYears);
-              const endDate = new Date(createDate.getFullYear() + durationInYears, createDate.getMonth(), createDate.getDate());
-              
+              const expirationDate = new Date(details.expirationDate);
               return (
                 <tr key={`seasonal-${id}-${index}`}>
                   <td>{name}</td>
                   <td>{'$'+ currentPrice/100}</td>
-                  <td>{endDate.toLocaleDateString()}</td>
+                  <td>{expirationDate.toLocaleDateString()}</td>
                   <td>{'$'+ Number(details.priceMax).toFixed(2)}</td>
                   <td>{'$'+ Number(details.priceMin).toFixed(2)}</td>
                   {/* Add additional columns for other details */}
