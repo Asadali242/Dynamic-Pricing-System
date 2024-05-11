@@ -37,6 +37,10 @@ function DynamicPricingMenu() {
         console.error('Error fetching enrolled products:', error);
       });
   };
+  const openProductInfo = (id) => {
+    console.log("Opening popup for product with ID:", id);
+    window.open('about:blank', 'Popup_Window', 'width=600,height=400');
+  };
 
   const renderHourlyProducts = () => {
     const hourlyProducts = enrolledProducts.hourly || [];
@@ -60,13 +64,23 @@ function DynamicPricingMenu() {
               const expirationDate = new Date(details.expirationDate);
               return (
                 <tr key={`hourly-${id}-${index}`}>
-                  <td>{name}</td>
+                  <td>
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault(); // Prevent default anchor behavior
+                        openProductInfo(id); // Call function to open popup
+                      }}
+                    >
+                      {name}
+                    </a>
+                  </td>
                   <td>{'$'+ currentPrice/100}</td>
                   <td>{expirationDate.toLocaleDateString()}</td>
                   <td>{details.timeZone}</td>
                   <td>{'$'+ Number(details.priceMax).toFixed(2)}</td>
                   <td>{'$'+ Number(details.priceMin).toFixed(2)}</td>
-                  {/* Add additional columns for other details */}
+                  {/* additional columns for other details */}
                 </tr>
               );
             })}
@@ -98,7 +112,17 @@ function DynamicPricingMenu() {
               const expirationDate = new Date(details.expirationDate);
               return (
                 <tr key={`seasonal-${id}-${index}`}>
-                  <td>{name}</td>
+                  <td>
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault(); // Prevent default anchor behavior
+                        openProductInfo(id); // Call function to open popup
+                      }}
+                    >
+                      {name}
+                    </a>
+                  </td>
                   <td>{'$'+ currentPrice/100}</td>
                   <td>{expirationDate.toLocaleDateString()}</td>
                   <td>{'$'+ Number(details.priceMax).toFixed(2)}</td>
@@ -127,7 +151,6 @@ function DynamicPricingMenu() {
     );
   };
   
-
 
   const fetchTotalUnitsSold = async () => {
     try {

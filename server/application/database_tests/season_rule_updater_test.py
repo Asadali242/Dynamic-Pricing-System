@@ -16,7 +16,7 @@ class SeasonRuleUpdaterTest(unittest.TestCase):
         self.season_rule_updater = SeasonRuleUpdater(self.db)
         dateOfCreation = datetime.now()
         dateOfCreationStr = dateOfCreation.isoformat()
-        expiration_date = dateOfCreation + timedelta(3)
+        expiration_date = dateOfCreation + timedelta(days=365 * 3)
         expirationDateStr = expiration_date.isoformat()
         #default seasonality rule data
         self.default_seasonality_rule_data = {
