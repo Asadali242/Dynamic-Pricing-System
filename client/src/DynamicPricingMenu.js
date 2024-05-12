@@ -38,7 +38,7 @@ function DynamicPricingMenu() {
       });
   };
 
-  const openProductInfo = (id) => {
+  const openProductInfo = (id, pricingDetails) => {
     fetch('http://localhost:5000/price_change_history', {
         method: 'POST',
         headers: {
@@ -76,9 +76,16 @@ function DynamicPricingMenu() {
           }).join('');  
           const popupWindow = window.open('', 'Popup_Window', 'width=600,height=400');
           popupWindow.document.write(`
-              <table style="border-collapse: collapse; width: 100%;">
-                  ${popupContent}
-              </table>
+                <table style="border-collapse: collapse; width: 100%; padding: 10px;">
+                <tr>
+                    <td style="font-size: larger;"><strong>Current Pricing Rule:</strong></td>
+                    <td>${pricingDetails ? JSON.stringify(pricingDetails) : 'N/A'}</td> <!-- Display pricing details -->
+                </tr>
+                <tr>
+                    <td style="font-size: larger;"><strong>Price Change History</strong></td>
+                </tr>
+                ${popupContent}
+            </table>
           `);
         } else {
             throw new Error(data.error);
@@ -117,7 +124,7 @@ function DynamicPricingMenu() {
                       href="#"
                       onClick={(e) => {
                         e.preventDefault(); // Prevent default anchor behavior
-                        openProductInfo(id); // Call function to open popup
+                        openProductInfo(id, details.hourlyPriceChanges); // Call function to open popup
                       }}
                     >
                       {name}
@@ -165,7 +172,7 @@ function DynamicPricingMenu() {
                       href="#"
                       onClick={(e) => {
                         e.preventDefault(); // Prevent default anchor behavior
-                        openProductInfo(id); // Call function to open popup
+                        openProductInfo(id, details.seasonalPriceChanges); // Call function to open popup
                       }}
                     >
                       {name}
