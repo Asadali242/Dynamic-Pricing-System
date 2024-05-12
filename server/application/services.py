@@ -13,6 +13,7 @@ from database_tests.database.total_units_sold_retriever import TotalUnitsSoldRet
 from database_tests.database.database_helpers import DatabaseHelpers
 from database_tests.database.total_sales_retriever import TotalSalesRetriever
 from database_tests.database.expired_rule_wiper import ExpiredRuleWiper
+from database_tests.database.price_change_history_getter import PriceChangeHistoryGetter
 
 
 
@@ -36,4 +37,5 @@ total_units_sold_retriever = TotalUnitsSoldRetriever(db)
 database_helpers = DatabaseHelpers(db)
 total_sales_retriever = TotalSalesRetriever(db)
 expired_rule_wiper = ExpiredRuleWiper(db)
+price_change_history_getter = PriceChangeHistoryGetter(db)
 

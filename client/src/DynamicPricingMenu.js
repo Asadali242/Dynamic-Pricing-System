@@ -37,9 +37,57 @@ function DynamicPricingMenu() {
         console.error('Error fetching enrolled products:', error);
       });
   };
+
   const openProductInfo = (id) => {
-    console.log("Opening popup for product with ID:", id);
-    window.open('about:blank', 'Popup_Window', 'width=600,height=400');
+    fetch('http://localhost:5000/price_change_history', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: id })  
+    })
+    .then(response => {
+      if (!response.ok) {
+          throw new Error('Failed to fetch price history');
+      }
+      return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+          const priceHistory = data.price_history;
+          const popupContent = priceHistory.map(entry => {
+              const createdate = new Date(entry.createdate).toLocaleString();
+              const priceUpdate = `priceBefore: ${entry.price_update.priceBefore}, priceAfter: ${entry.price_update.priceAfter}`;
+              const rule = entry.rule ? `${JSON.stringify(entry.rule)}<br>` : 'N/A<br>'; 
+              return `
+                <tr>
+                    <td><strong>createdate:</strong></td>
+                    <td>${createdate}</td>
+                </tr>
+                <tr>
+                    <td><strong>price_change:</strong></td>
+                    <td>${priceUpdate}</td>
+                </tr>
+                <tr>
+                    <td><strong>rule:</strong></td>
+                    <td>${rule}</td>
+                </tr>
+            `;
+          }).join('');  
+          const popupWindow = window.open('', 'Popup_Window', 'width=600,height=400');
+          popupWindow.document.write(`
+              <table style="border-collapse: collapse; width: 100%;">
+                  ${popupContent}
+              </table>
+          `);
+        } else {
+            throw new Error(data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error.message);
+        // Handle error as needed
+    });
   };
 
   const renderHourlyProducts = () => {

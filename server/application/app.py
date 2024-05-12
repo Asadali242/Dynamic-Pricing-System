@@ -6,6 +6,7 @@ from item_routes import item_blueprint
 from rule_routes import rule_blueprint
 from price_change_routes import suggestion_price_update_blueprint
 from dashboard_routes import dashboard_statistic_blueprint
+from price_change_history_routes import price_change_history_blueprint
 from scheduler import initialize_scheduler, register_jobs, register_shutdown
 from rule_based_price_updates import hourly_update, seasonal_update, new_minute_update
 from suggestion_updater import hourly_suggestion_updater, hourly_suggestion_emitter, seasonal_suggestion_updater, seasonal_suggestion_emitter
@@ -20,6 +21,7 @@ app.register_blueprint(item_blueprint)
 app.register_blueprint(rule_blueprint)
 app.register_blueprint(suggestion_price_update_blueprint)
 app.register_blueprint(dashboard_statistic_blueprint)
+app.register_blueprint(price_change_history_blueprint)
 
 initialize_scheduler()
 suggestions = {} 
