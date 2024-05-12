@@ -77,32 +77,37 @@ function DynamicPricingMenu() {
           const popupWindow = window.open('', 'Popup_Window', 'width=800,height=400');
           popupWindow.document.write(`
           <style>
-          .popup-table {
-              border-collapse: collapse; 
-              width: 100%; 
-              padding: 10px;
-          }
-          .popup-table th, .popup-table td {
-              padding: 8px;
-              border: 1px solid #dddddd;
-              text-align: left;
-          }
-          .popup-table th {
-              background-color: #f2f2f2;
-              font-size: larger;
-          }
-      </style>
-      <table class="popup-table">
-          <tr>
-              <th>Current Pricing Rule:</th>
-              <td>${pricingDetails ? JSON.stringify(pricingDetails) : 'N/A'}</td>
-          </tr>
-          <tr>
-              <th>Price Change History</th>
-          </tr>
-          ${popupContent}
-      </table>
-  `);
+                    .popup-table {
+                        border-collapse: collapse; 
+                        width: 100%; 
+                        padding: 10px;
+                    }
+                    .popup-table th, .popup-table td {
+                        padding: 8px;
+                        border: 1px solid #dddddd;
+                        text-align: left;
+                    }
+                    .popup-table th {
+                        background-color: #f2f2f2;
+                        font-size: larger;
+                    }
+                    .pricing-rule-table {
+                        margin-bottom: 20px; /* Add space below the pricing rule table */
+                    }
+                </style>
+                <table class="popup-table pricing-rule-table">
+                    <tr>
+                        <th>Current Pricing Rule:</th>
+                        <td>${pricingDetails ? JSON.stringify(pricingDetails) : 'N/A'}</td>
+                    </tr>
+                </table>
+                <table class="popup-table">
+                    <tr>
+                        <th>Price Change History</th>
+                    </tr>
+                    ${popupContent}
+                </table>
+            `);
         } else {
             throw new Error(data.error);
         }
