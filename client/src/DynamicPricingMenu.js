@@ -74,19 +74,35 @@ function DynamicPricingMenu() {
                 </tr>
             `;
           }).join('');  
-          const popupWindow = window.open('', 'Popup_Window', 'width=600,height=400');
+          const popupWindow = window.open('', 'Popup_Window', 'width=800,height=400');
           popupWindow.document.write(`
-                <table style="border-collapse: collapse; width: 100%; padding: 10px;">
-                <tr>
-                    <td style="font-size: larger;"><strong>Current Pricing Rule:</strong></td>
-                    <td>${pricingDetails ? JSON.stringify(pricingDetails) : 'N/A'}</td> <!-- Display pricing details -->
-                </tr>
-                <tr>
-                    <td style="font-size: larger;"><strong>Price Change History</strong></td>
-                </tr>
-                ${popupContent}
-            </table>
-          `);
+          <style>
+          .popup-table {
+              border-collapse: collapse; 
+              width: 100%; 
+              padding: 10px;
+          }
+          .popup-table th, .popup-table td {
+              padding: 8px;
+              border: 1px solid #dddddd;
+              text-align: left;
+          }
+          .popup-table th {
+              background-color: #f2f2f2;
+              font-size: larger;
+          }
+      </style>
+      <table class="popup-table">
+          <tr>
+              <th>Current Pricing Rule:</th>
+              <td>${pricingDetails ? JSON.stringify(pricingDetails) : 'N/A'}</td>
+          </tr>
+          <tr>
+              <th>Price Change History</th>
+          </tr>
+          ${popupContent}
+      </table>
+  `);
         } else {
             throw new Error(data.error);
         }
