@@ -416,17 +416,8 @@ function DynamicPricingMenu() {
             <p className="value-text">{totalUnitsSold ? totalUnitsSold : 'Loading...'}</p>
           </div>
           <div className="dashboard-section">
-            <h3>Missed Sales</h3>
-          </div>
-          <div className="dashboard-section">
-            <h3>Profit</h3>
-          </div>
-          <div className="dashboard-section">
             <h3>Total Sales</h3>
             <p className="value-text">{totalSales ? `$${totalSales.toLocaleString()}` : 'Loading...'}</p>
-          </div>
-          <div className="dashboard-section">
-            <h3>Margin</h3>
           </div>
         </div>
       </div>
