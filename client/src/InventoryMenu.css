@@ -149,3 +149,34 @@ select {
   flex: 1;
 }
 
+.success-popup, .save-edit-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgb(245, 241, 241);
+  color: #FF00FF;
+  border: 1px solid #FF00FF;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end
+}
+
+.success-popup button, .save-edit-popup button {
+  background-color: #ffffff;
+  color: rgb(3, 0, 0);
+  border: 1px solid #FF00FF;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 0;
+  align-self: flex-start; /* Align the button to the top right */
+}
+
+.success-popup button:hover, .save-edit-popup button:hover {
+  background-color: #FF00FF;
+}

@@ -19,8 +19,9 @@ function InventoryMenu() {
   const [validHourRules, setValidHourRules] = useState(false);
   const [validSeasonRules, setValidSeasonRules] = useState(false);
   const [timezone, setTimezone] = useState('EST');
-
   const [itemsInCategory, setItemsInCategory] = useState([]);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [showSaveEditPopup, setShowSaveEditPopup] = useState(false);
   
   const categories = [
     /*'Grocery',
@@ -255,6 +256,7 @@ function InventoryMenu() {
       .then(response => response.json())
       .then(data => {
           console.log('Success:', data);
+          setShowSaveEditPopup(true); // Show save edit popup
           handleCloseModal(); // Close modal after saving
       })
       .catch((error) => {
@@ -315,6 +317,7 @@ function InventoryMenu() {
       .then(response => response.json())
       .then(data => {
         console.log('Success:', data);
+        setShowSuccessPopup(true);
         // maybe update state or show a success message
       })
       .catch(error => {
@@ -530,6 +533,18 @@ function InventoryMenu() {
               </div>
             )}
           </div>
+        </div>
+      )}
+      {showSuccessPopup && ( // Conditional rendering of success popup
+        <div className="success-popup">
+          <p>All Dynamic Pricing Rules for the selected Category have been removed successfully!</p>
+          <button onClick={() => setShowSuccessPopup(false)}>Exit</button>
+        </div>
+      )}
+      {showSaveEditPopup && ( // Conditional rendering of save edit popup
+        <div className="save-edit-popup">
+          <p>The Dynamic Pricing rule(s) have been saved successfully!</p>
+          <button onClick={() => setShowSaveEditPopup(false)}>Exit</button>
         </div>
       )}
       <div className="pricing-recommendations">
