@@ -19,10 +19,10 @@ class SalesHistoryGetterTest(unittest.TestCase):
 
     def insert_sample_data(self, sample_data):
         conn = psycopg2.connect(
-            dbname="postgres",
-            user="lulapricingtest",
-            password="luladbtest",
-            host="lula-dynamicpricing-testdb.ca3vbbjlumqp.us-east-1.rds.amazonaws.com",
+            dbname="",
+            user="",
+            password="",
+            host="",
             port=5432
         )
         print("inserting sample data now")

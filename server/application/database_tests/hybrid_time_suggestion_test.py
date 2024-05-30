@@ -5,11 +5,11 @@ from database.hybrid_time_suggestion import HybridTimeSuggestion
 class HybridTimeSuggestionTest(unittest.TestCase):
     def setUp(self):
         # Configure the database connection parameters
-        DB_HOST = "lula-dynamicpricing-testdb.ca3vbbjlumqp.us-east-1.rds.amazonaws.com"
-        DB_PORT = 5432
-        DB_USER = "lulapricingtest"
-        DB_PASSWORD = "luladbtest"
-        DB_NAME = "postgres"
+        DB_HOST = "hostname"
+        DB_PORT = 0000
+        DB_USER = "username"
+        DB_PASSWORD = "password"
+        DB_NAME = "dbname"
         self.db = Database(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
         self.hybrid_time_suggestion = HybridTimeSuggestion(self.db)
 

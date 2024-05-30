@@ -4,11 +4,11 @@ from database.hybrid_seasonal_suggestion import HybridSeasonalSuggestion
 
 class HybridSeasonalSuggestionTest(unittest.TestCase):
     def setUp(self):
-        DB_HOST = "lula-dynamicpricing-testdb.ca3vbbjlumqp.us-east-1.rds.amazonaws.com"
-        DB_PORT = 5432
-        DB_USER = "lulapricingtest"
-        DB_PASSWORD = "luladbtest"
-        DB_NAME = "postgres"
+        DB_HOST = "hostname"
+        DB_PORT = 0000
+        DB_USER = "username"
+        DB_PASSWORD = "password"
+        DB_NAME = "dbname"
         self.db = Database(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
         self.hybrid_seasonal_suggestion = HybridSeasonalSuggestion(self.db)
 

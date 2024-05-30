@@ -22,6 +22,7 @@ DB_PORT = 5432
 DB_USER = "lulapricingtest"
 DB_PASSWORD = "luladbtest"
 DB_NAME = "postgres"
+
 db = Database(DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 item_retriever = ItemRetriever(db)
 time_rule_updater = TimeRuleUpdater(db)
